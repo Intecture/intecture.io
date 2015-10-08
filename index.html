@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta name="description" content="Language agnostic, DSL-free, mercury free systems management for developers.">
+  <meta name="author" content="Between Lines">
+
+  <title>Intecture&reg;</title>
+
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/highlight-tomorrow.css" />
+
+  <script src="js/MooTools-More-1.5.2-compressed.js"></script>
+  <script src="js/highlight.pack.js"></script>
+  <script src="js/main.js"></script>
+</head>
+
+<body>
+  <div id="Header">
+    <h1>intecture.<span class="reg">&reg;</span></h1>
+    <p id="TagLine">Language agnostic, DSL-free, mercury free systems management for developers.</p>
+
+    <div id="InstallFeature">
+      <input class="codeblock buttons bash" type="text" value="$ curl -sSf https://static.intecture.io/install.sh | sh" />
+      <div class="codebutton copy">Select</div>
+    </div>
+
+    <ul id="MainNav">
+      <li class="AnchorWhat"><a href="#">What is Intecture?</a></li>
+      <li class="AnchorQuickStart"><a href="#">Quick Start Guide</a></li>
+      <li class="AnchorComponents"><a href="#">Components</a></li>
+      <li class="AnchorSupport"><a href="#">Support/Feedback</a></li>
+      <li><a href="http://docs.intecture.io">Documentation</a></li>
+    </ul>
+  </div>
+
+  <div id="MainContainer">
+    <div class="message warning">
+      <strong>WARNING:</strong> Intecture is under heavy development and <strong>is not
+      suitable</strong> for production environments. As there is currently no security
+      on the ZeroMQ sockets, the agent should not be exposed to the internet under any
+      circumstances.
+    </div>
+
+    <div id="AnchorWhat" class="section">
+      <div class="right">
+        <ul id="LanguageSample" class="menu">
+          <li class="active">Rust</li>
+          <li>C</li>
+          <li>PHP</li>
+          <li>Ruby</li>
+        </ul>
+
+        <div class="codeblock rust">fn main() {
+  let mut ctx = zmq::Context::new();
+  let mut sock = ctx.socket(zmq::REQ).unwrap();
+  sock.connect("tcp://my_server:7101").unwrap();
+
+  let cmd = Command::new("whoami");
+  let result = cmd.exec(sock);
+
+  println!("{:?}", result);
+}
+</div>
+
+        <div class="codeblock c" style="display: none;">int main (void) {
+  void *context = zmq_ctx_new();
+  void *sock = zmq_socket (context, ZMQ_REQ);
+  zmq_connect (sock, "tcp://my_server:7101");
+
+  Command command = command_new("whoami");
+  CommandResult result = command_exec(&command, sock);
+
+  printf("exit: %d, stdout: %s, stderr: %s", result.exit_code, result.stdout, result.stderr);
+}
+</div>
+
+        <div class="codeblock php" style="display: none;">&lt;?php
+
+$context = new ZMQSocket();
+$socket = $context->getSocket(ZMQ::SOCKET_REQ);
+$socket->connect("tcp://my_server:7101");
+
+$cmd = new Intecture\Command('whoami');
+$result = $cmd->exec($socket);
+
+print_r($result);
+</div>
+
+        <div class="codeblock ruby" style="display: none;">context = ZMQ::Context.new(1)
+socket = context.socket(ZMQ::REQ)
+socket.connect("tcp://my_server:7101")
+
+cmd = Command('whoami')
+result = cmd.exec(socket)
+
+puts result.inspect
+</div>
+      </div>
+
+      <div class="left">
+        <a name="what"></a><h2>What is Intecture?</h2>
+
+        <p>Intecture is a developer friendly, language agnostic configuration management tool for server systems.</p>
+
+        <ul class="spaced">
+          <li>Extensible support for virtually any programming language</li>
+          <li>Standard programming interface. No DSL. No magic.</li>
+          <li>Rust API library (and bindings for popular languages)</li>
+        </ul>
+      </div>
+
+      <div style="clear: both;"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div id="AnchorQuickStart" class="section">
+      <h2>Quick Start Guide</h2>
+
+      <p>The easiest way to install and configure Intecture is via the interactive installer:</p>
+
+      <div class="codeblock bash">$ curl -sSf https://static.intecture.io/install.sh | sh</div>
+
+      <p>
+        You can also compile and configure each component separately. Instructions for manual
+        installation can be found in the README.md file in each repository.
+      </p>
+
+      <p>Once you've installed Intecture, it's time to create your first project and get coding!</p>
+
+      <p>Use the CLI to create a new project and install the example framework.</p>
+
+      <div class="codeblock bash">$ cd /path/to/my-projects
+$ incli init my-project php
+Created project my-project
+</div>
+
+      <p>That wasn't so hard. Now let's run it!</p>
+
+      <div class="codeblock bash">$ cd my-project
+$ incli run
+Usage: incli run &lt;server_host_or_ip&gt;
+</div>
+
+      <p>
+        Ok, so that wasn't very exciting, but let's dig into it. If you look in your <em>my-project</em> directory, you'll see a bootstrap file. For PHP projects, it's <em>bootstrap.php</em>. In this file you'll see that it's asking for an argument <em>&lt;server_host_or_ip&gt;</em>. This refers to the host you want Intecture to build (remember that this host must run the Intecture Agent).
+      </p>
+
+      <p>Let's try it again with the server IP as an argument. Remember that your IP will probably not be <em>127.0.0.1</em> as in the example.</p>
+
+      <div class="codeblock bash">$ cd my-project
+$ incli run 127.0.0.1
+Array
+(
+  [exit_code] => 0
+  [stdout] => root
+
+  [stderr] =>
+)
+</div>
+
+      <p>
+        That's more like it! You've just run your first remote command. Make sure you check out the documentation:
+        <a href="http://docs.intecture.io">docs.intecture.io</a>.
+      </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div id="AnchorComponents" class="section alt">
+      <h2>Components</h2>
+      <p>Intecture aims to be a fully distributed, service orientated system. Thus it is broken up into several modules.</p>
+
+      <h3>CLI</h3>
+
+      <div class="icon">
+        <a href="https://github.com/betweenlines/intecture-cli" target="_blank">
+          <img src="images/github-icon.png" alt="GitHub" />
+          intecture-cli
+        </a>
+      </div>
+
+      <p>
+        The CLI lives on developers' machines and is the primary interface with Intecture.
+        Use it to kick off builds and manage the system.
+      </p>
+
+      <h3>API</h3>
+
+      <div class="icon">
+        <a href="https://github.com/betweenlines/intecture-api" target="_blank">
+          <img src="images/github-icon.png" alt="GitHub" />
+          intecture-api
+        </a>
+      </div>
+
+      <p>The API is the interface between your code and the Intecture Agent on your managed hosts.</p>
+
+      <h4>Bindings</h4>
+
+      <div class="icon">
+        <a href="https://github.com/betweenlines/intecture-api-c" target="_blank">
+          <img src="images/c-icon.png" alt="C" />
+          intecture-api-c
+        </a>
+      </div>
+
+      <div class="icon">
+        <a href="https://github.com/betweenlines/intecture-api-php" target="_blank">
+          <img src="images/php-icon.png" alt="PHP" />
+          intecture-api-php
+        </a>
+      </div>
+
+      <div class="icon">
+        <a href="https://github.com/betweenlines/intecture-api-ruby" target="_blank">
+          <img src="images/ruby-icon.png" alt="Ruby" />
+          intecture-api-ruby
+        </a>
+      </div>
+
+      <h3>Agent</h3>
+
+      <div class="icon">
+          <a href="https://github.com/betweenlines/intecture-agent" target="_blank">
+          <img src="images/github-icon.png" alt="GitHub" />
+          intecture-agent
+        </a>
+      </div>
+
+      <p>
+        Each server that you want to manage must run the Intecture Agent. This service
+        listens on a user-defined TCP socket for incoming requests from the API.
+      </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div id="AnchorSupport" class="section">
+      <h2>Support &amp; Feedback</h2>
+
+      <p>Documentation can be found at <a href="http://docs.intecture.io">docs.intecture.io</a>.</p>
+
+      <p>For enterprise support and consulting services, please email <span id="SupportEmail"></span>.</p>
+
+      For any bugs, feature requests etc., please ticket them on GitHub.
+    </div>
+
+    <div class="divider"></div>
+  </div>
+
+  <div id="Footer">
+    Copyright &copy; 2015 Between Lines&reg;, All Rights Reserved
+    <p>Intecture&reg; is Copyright &copy; 2015 Between Lines and Contributors.
+      Intecture is open source software licenced under the MPL.
+      Intecture is a trademark of Between Lines Limited.</p>
+  </div>
+</body>
+</html>

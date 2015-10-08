@@ -1,0 +1,206 @@
+@font-face {
+    font-family: FiraSans;
+    src: url('../fonts/fira-sans/FiraSans-Regular.otf');
+}
+
+@font-face {
+    font-family: FiraSansLight;
+    src: url('../fonts/fira-sans/FiraSans-Light.otf');
+}
+
+body {
+    color: #2A2833;
+    font: normal 0.9em FiraSansLight, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font: normal 4em FiraSans, FiraSansLight, Helvetica, Arial, sans-serif;
+    letter-spacing: -3px;
+    text-align: center;
+    margin: 2em 0 0 0;
+}
+
+h1 span.reg {
+    font-size: 0.3em;
+    vertical-align: 120%;
+}
+
+h2 {
+    padding-top: 0;
+    margin-top: 0;
+}
+
+h3 {
+    color: #3D4270;
+}
+
+h4 {
+    color: #8AA7CC;
+}
+
+a:link {
+    color: #3D4270;
+}
+a:visited {
+    color: #3D4270;
+}
+a:hover {
+    color: #8AA7CC;
+}
+a:active {
+    color: #3D4270;
+}
+
+div#MainContainer {
+    width: 1000px;
+    margin: 0 auto;
+    font-size: 1.1em;
+}
+
+div#Header {
+    background: linear-gradient(0deg, #E6E1E5, #FEFEFE, #E6E1E5);
+    border-bottom: solid 1px #D2D2D6;
+    padding: 1em;
+}
+
+p#TagLine {
+    text-align: center;
+    margin-bottom: 4em;
+    color: #3D4270;
+    font-style: italic;
+}
+
+div#InstallFeature {
+    width: 33em;
+    margin: 0 auto;
+    text-align: center;
+}
+
+ul#MainNav {
+    padding-left: 0;
+    text-align: center;
+    margin: 2em 0;
+}
+
+ul#MainNav li {
+    display: inline;
+    padding: 0 0.5em;
+}
+
+div#Footer {
+    margin: 1em 0;
+    text-align: center;
+    font-size: 0.7em;
+}
+
+div.section {
+    padding: 4em 0;
+}
+
+div.divider {
+    border-bottom: solid 1px #D2D2D6;
+    width: 750px;
+    margin: 0 auto;
+}
+
+div.message {
+    border: solid 1px #D2D2D6;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+    padding: 0.5em;
+    font-size: 0.9em;
+    width: 50em;
+    margin: 2em auto;
+}
+
+div.message.warning {
+    border: solid 1px #EAB700;
+    color: #EAB700;
+}
+
+.codeblock {
+    border: solid 1px #D2D2D6;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+    padding: 0.68em;
+    font-family: monospace;
+    white-space: pre;
+}
+
+input.codeblock {
+    margin: 0;
+    padding: 0.68em 0.5em;
+    width: 34em;
+    font-size: 1em;
+}
+
+.codeblock.buttons {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: 0;
+    float: left;
+}
+
+div.codebutton {
+    border: solid 1px #8AA7CC;
+    border-radius: 0 5px 5px 0;
+    padding: 7px 0;
+    height: 16px;
+    background-color: #FFFFFF;
+    color: #8AA7CC;
+    margin-left: 28.5em;
+    width: 60px;
+}
+
+div.codebutton:hover {
+    background-color: #3D4270;
+    cursor: pointer;
+}
+
+div.left {
+    margin-right: 50%;
+}
+
+div.right {
+    float: right;
+    width: 45%;
+}
+
+ul.menu {
+    margin: 0;
+    padding: 0;
+}
+
+ul.menu li {
+    display: inline;
+    padding: 0 0.2em;
+    cursor: pointer;
+    font-size: 0.8em;
+}
+
+ul.menu li.active, ul.menu li:hover {
+    color: #8AA7CC;
+}
+
+ul.spaced li {
+    padding: 0.5em 0;
+}
+
+div.icon {
+    font-size: 0.85em;
+    padding: 0.2em 0;
+}
+
+div.icon span.label {
+    display: inline-block;
+    width: 3em;
+    font-weight: bold;
+    font-size: 1.05em;
+}
+
+div.icon img {
+    vertical-align: middle;
+    width: 18px;
+}
