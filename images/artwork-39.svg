@@ -1,0 +1,39 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 687.553 687.553">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #ff685b;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4 {
+        stroke: #000;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-1, .cls-2, .cls-4 {
+        stroke-width: 10px;
+      }
+
+      .cls-2, .cls-3 {
+        fill: none;
+      }
+
+      .cls-3 {
+        stroke-width: 30px;
+      }
+
+      .cls-4 {
+        fill: #66bc96;
+      }
+    </style>
+  </defs>
+  <title>b140db16-49ff-442f-a04d-6b2b4d30ccd3</title>
+  <rect class="cls-1" x="311.512" y="119.064" width="44.767" height="433.254" transform="translate(285.467 -135.297) rotate(38.976)"/>
+  <rect class="cls-2" x="465.131" y="118.217" width="44.767" height="55.209" transform="translate(200.235 -274.184) rotate(38.976)"/>
+  <rect class="cls-2" x="157.893" y="497.955" width="44.767" height="55.209" transform="translate(370.699 3.591) rotate(38.976)"/>
+  <circle class="cls-3" cx="343.776" cy="343.776" r="328.776"/>
+  <line class="cls-3" x1="89.767" y1="136.287" x2="597.822" y2="551.266"/>
+  <polygon class="cls-1" points="310.115 120.536 330.749 109.688 326.809 132.665 343.502 148.937 320.432 152.289 310.115 173.194 299.798 152.289 276.728 148.937 293.422 132.665 289.481 109.688 310.115 120.536"/>
+  <polygon class="cls-4" points="545.365 306.794 572.951 292.291 567.683 323.009 590.001 344.764 559.158 349.246 545.365 377.194 531.571 349.246 500.728 344.764 523.046 323.009 517.778 292.291 545.365 306.794"/>
+  <polygon class="cls-1" points="337.365 505.794 364.951 491.291 359.683 522.009 382.001 543.764 351.158 548.246 337.365 576.194 323.571 548.246 292.728 543.764 315.046 522.009 309.778 491.291 337.365 505.794"/>
+</svg>

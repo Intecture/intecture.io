@@ -1,279 +1,866 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <meta name="description" content="Language agnostic, DSL-free, mercury free systems management for developers.">
-  <meta name="author" content="Between Lines">
-
-  <title>Intecture&reg;</title>
-
-  <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/highlight-tomorrow.css" />
-
-  <script src="js/MooTools-More-1.5.2-compressed.js"></script>
-  <script src="js/highlight.pack.js"></script>
-  <script src="js/main.js"></script>
-</head>
-
-<body>
-  <div id="Header">
-    <h1>intecture.<span class="reg">&reg;</span></h1>
-    <p id="TagLine">Language agnostic, DSL-free, mercury free systems management for developers.</p>
-
-    <div id="InstallFeature">
-      <input class="codeblock buttons bash" type="text" value="$ curl -sSf https://static.intecture.io/install.sh | sh" />
-      <div class="codebutton copy">Select</div>
-    </div>
-
-    <ul id="MainNav">
-      <li class="AnchorWhat"><a href="#">What is Intecture?</a></li>
-      <li class="AnchorQuickStart"><a href="#">Quick Start Guide</a></li>
-      <li class="AnchorComponents"><a href="#">Components</a></li>
-      <li class="AnchorSupport"><a href="#">Support/Feedback</a></li>
-      <li><a href="https://docs.intecture.io">Documentation</a></li>
-      <li><a href="https://announce.intecture.io">Announcements</a></li>
-    </ul>
-  </div>
-
-  <div id="MainContainer">
-    <div class="message warning">
-      <strong>WARNING:</strong> Intecture is under heavy development and <strong>is not
-      suitable</strong> for production environments. As there is currently no security
-      on the ZeroMQ sockets, the agent should not be exposed to the internet under any
-      circumstances.
-    </div>
-
-    <div id="AnchorWhat" class="section">
-      <div class="right">
-        <ul id="LanguageSample" class="menu">
-          <li class="active">Rust</li>
-          <li>C</li>
-          <li>PHP</li>
-          <li>Ruby</li>
-        </ul>
-
-        <div class="codeblock rust">fn main() {
-  let mut host = Host::new("hostname_or_ip", 7101);
-
-  let cmd = Command::new("whoami");
-  let result = cmd.exec(host);
-
-  println!("{:?}", result);
-}
-</div>
-
-        <div class="codeblock c" style="display: none;">int main (void) {
-  host Host = host_new("hostname_or_ip", 7101);
-
-  Command command = command_new("whoami");
-  CommandResult result = command_exec(&command, &host);
-
-  printf("exit: %d, stdout: %s, stderr: %s", result.exit_code, result.stdout, result.stderr);
-}
-</div>
-
-        <div class="codeblock php" style="display: none;">&lt;?php
-
-$host = new Host('hostname_or_ip', 7101);
-
-$cmd = new Intecture\Command('whoami');
-$result = $cmd->exec($host);
-
-print_r($result);
-</div>
-
-<!--        <div class="codeblock ruby" style="display: none;">host = Host.new('hostname_or_ip', 7101)
-
-cmd = Command('whoami')
-result = cmd.exec(host)
-
-puts result.inspect
-</div>-->
-      </div>
-
-      <div class="left">
-        <a name="what"></a><h2>What is Intecture?</h2>
-
-        <p>Intecture is a developer friendly, language agnostic configuration management tool for server systems.</p>
-
-        <ul class="spaced">
-          <li>Extensible support for virtually any programming language</li>
-          <li>Standard programming interface. No DSL. No magic.</li>
-          <li>Rust API library (and bindings for popular languages)</li>
-        </ul>
-      </div>
-
-      <div style="clear: both;"></div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div id="AnchorQuickStart" class="section">
-      <h2>Quick Start Guide</h2>
-
-      <p>The easiest way to install and configure Intecture is via the interactive installer:</p>
-
-      <div class="codeblock bash">$ curl -sSf https://static.intecture.io/install.sh | sh</div>
-
-      <p>
-        You can also compile and configure each component separately. Instructions for manual
-        installation can be found in the README.md file in each repository.
-      </p>
-
-      <p>Once you've installed Intecture, it's time to create your first project and get coding!</p>
-
-      <p>Use the CLI to create a new project and install the example framework.</p>
-
-      <div class="codeblock bash">$ cd /path/to/my-projects
-$ incli init my-project php
-Created project my-project
-</div>
-
-      <p>That wasn't so hard. Now let's run it!</p>
-
-      <div class="codeblock bash">$ cd my-project
-$ incli run
-Usage: incli run &lt;server_host_or_ip&gt;
-</div>
-
-      <p>
-        Ok, so that wasn't very exciting, but let's dig into it. If you look in your <em>my-project</em> directory, you'll see a bootstrap file. For PHP projects, it's <em>bootstrap.php</em>. In this file you'll see that it's asking for an argument <em>&lt;server_host_or_ip&gt;</em>. This refers to the host you want Intecture to build (remember that this host must run the Intecture Agent).
-      </p>
-
-      <p>Let's try it again with the server IP as an argument. Remember that your IP will probably not be <em>127.0.0.1</em> as in the example.</p>
-
-      <div class="codeblock bash">$ cd my-project
-$ incli run 127.0.0.1
-Array
-(
-  [exit_code] => 0
-  [stdout] => root
-  [stderr] =>
-)
-</div>
-
-      <p>
-        That's more like it! You've just run your first remote command. Make sure you check out the documentation:
-        <a href="http://docs.intecture.io">docs.intecture.io</a>.
-      </p>
-    </div>
-
-    <div class="divider"></div>
-
-    <div id="AnchorComponents" class="section alt">
-      <h2>Components</h2>
-      <p>Intecture aims to be a fully distributed, service orientated system. Thus it is broken up into several modules.</p>
-
-      <h3>Agent</h3>
-
-      <div class="icon">
-        <a href="https://github.com/betweenlines/intecture-agent" target="_blank">
-          <img src="images/github-icon.png" alt="GitHub" />
-          intecture-agent
-        </a>
-      </div>
-
-      <p>
-        Each server that you want to manage must run the Intecture Agent. This service
-        listens on a user-defined TCP socket for incoming requests from the API.
-      </p>
-
-      <h3>API</h3>
-
-      <div class="icon">
-        <a href="https://github.com/betweenlines/intecture-api" target="_blank">
-          <img src="images/github-icon.png" alt="GitHub" />
-          intecture-api
-        </a>
-      </div>
-
-      <p>The API is the interface between your code and the Intecture Agent on your managed hosts.</p>
-
-      <h4>Bindings</h4>
-
-      <div class="icon">
-        <a href="https://github.com/betweenlines/intecture-api-c" target="_blank">
-          <img src="images/c-icon.png" alt="C" />
-          intecture-api-c
-        </a>
-      </div>
-
-      <div class="icon">
-        <a href="https://github.com/betweenlines/intecture-api-php" target="_blank">
-          <img src="images/php-icon.png" alt="PHP" />
-          intecture-api-php
-        </a>
-      </div>
-
-      <!--      <div class="icon">
-              <a href="https://github.com/betweenlines/intecture-api-ruby" target="_blank">
-                <img src="images/ruby-icon.png" alt="Ruby" />
-                intecture-api-ruby
-              </a>
-            </div>-->
-
-      <h3>CLI</h3>
-
-      <div class="icon">
-        <a href="https://github.com/betweenlines/intecture-cli" target="_blank">
-          <img src="images/github-icon.png" alt="GitHub" />
-          intecture-cli
-        </a>
-      </div>
-
-      <p>
-        The CLI lives on developers' machines and is the primary interface with Intecture.
-        Use it to kick off builds and manage the system.
-      </p>
-
-      <h3>Host Primitives</h3>
-
-      <div class="icon">
-        <a href="https://github.com/betweenlines/intecture-host-primitives" target="_blank">
-          <img src="images/github-icon.png" alt="GitHub" />
-          intecture-host-primitives
-        </a>
-      </div>
-    </div>
-
-    <p>
-      Host Primitives contains the basic building blocks for interacting with a managed host.
-    </p>
-
-    <div class="divider"></div>
-
-    <div id="AnchorSupport" class="section">
-      <h2>Support &amp; Feedback</h2>
-
-      <p>Documentation can be found at <a href="https://docs.intecture.io">docs.intecture.io</a>.</p>
-
-      <p>You can stay up to date with the project at <a href="https://announce.intecture.io">announce.intecture.io</a>.</p>
-
-      <p>For enterprise support and consulting services, please email <span id="SupportEmail"></span>.</p>
-
-      For any bugs, feature requests etc., please ticket them on GitHub.
-    </div>
-
-    <div class="divider"></div>
-  </div>
-
-  <div id="Footer">
-    Copyright &copy; 2015-2016 Between Lines&reg;, All Rights Reserved
-    <p>Intecture&reg; is Copyright &copy; 2015-2016 Between Lines and Contributors.
-      Intecture is open source software licenced under the MPL.
-      Intecture is a trademark of Between Lines Limited.</p>
-  </div>
-
+<html class="nojs html" lang="en-GB">
+ <head>
+
+  <meta http-equiv="Content-type" content="text/html;charset=UTF-8"/>
+  <meta name="generator" content="2015.2.1.352"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  
   <script type="text/javascript">
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-    ga('create', 'UA-42328458-2', 'auto');
-    ga('send', 'pageview');
-  </script>
-</body>
+   // Update the 'nojs'/'js' class on the html node
+document.documentElement.className = document.documentElement.className.replace(/\bnojs\b/g, 'js');
+
+// Check that all required assets are uploaded and up-to-date
+if(typeof Muse == "undefined") window.Muse = {}; window.Muse.assets = {"required":["jquery-1.8.3.min.js", "museutils.js", "museconfig.js", "jquery.watch.js", "webpro.js", "musewpslideshow.js", "jquery.museoverlay.js", "touchswipe.js", "musewpdisclosure.js", "jquery.scrolleffects.js", "jquery.museresponsive.js", "require.js", "index.css"], "outOfDate":[]};
+</script>
+  
+  <link rel="shortcut icon" href="images/favicon.ico?crc=4181373551"/>
+  <title>Home | Intecture</title>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="css/site_global.css?crc=3789368845"/>
+  <link rel="stylesheet" type="text/css" href="css/master_a-master.css?crc=456026777"/>
+  <link rel="stylesheet" type="text/css" href="css/index.css?crc=3807728089" id="pagesheet"/>
+  <!-- IE-only CSS -->
+  <!--[if lt IE 9]>
+  <link rel="stylesheet" type="text/css" href="css/iefonts_index.css?crc=384181661"/>
+  <link rel="stylesheet" type="text/css" href="css/nomq_preview_master_a-master.css?crc=4278092853"/>
+  <link rel="stylesheet" type="text/css" href="css/nomq_index.css?crc=3901885363" id="nomq_pagesheet"/>
+  <![endif]-->
+  <!-- Other scripts -->
+  <script type="text/javascript">
+   var __adobewebfontsappname__ = "muse";
+</script>
+  <!-- JS includes -->
+  <script type="text/javascript">
+   document.write('\x3Cscript src="' + (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//webfonts.creativecloud.com/cabin:n7,n4,n5:default.js" type="text/javascript">\x3C/script>');
+</script>
+   </head>
+ <body>
+
+  <div class="breakpoint active" id="bp_infinity" data-min-width="1001"><!-- responsive breakpoint node -->
+   <div class="clearfix" id="page"><!-- column -->
+    <div class="position_content" id="page_position_content">
+     <div class="browser_width mse_pre_init shared_content" id="u37062-bw" data-content-guid="u37062-bw_content">
+      <div class="gradient" id="u37062"><!-- simple frame --></div>
+     </div>
+     <a class="anchor_item colelem shared_content" id="top" data-content-guid="top_content"></a>
+     <div class="browser_width" id="u94-bw">
+      <div class="ose_pre_init pinned-colelem shared_content" id="u94" data-content-guid="u94_content"><!-- simple frame --></div>
+     </div>
+     <a class="nonblock nontext anim_swing clip_frame pinned-colelem" id="u46927" href="index.html#top"><!-- svg --><img class="svg temp_no_img_src" id="u46923" data-orig-src="images/artwork-3.svg?crc=235276036" width="132" height="34" alt="" data-mu-svgfallback="images/artwork%203_poster_.png?crc=360626270" src="images/blank.gif?crc=4208392903"/></a>
+     <a class="nonblock nontext anim_swing clearfix pinned-colelem" id="u7143-4" href="index.html#about"><!-- content --><p>About</p></a>
+     <a class="nonblock nontext anim_swing clearfix pinned-colelem" id="u7147-4" href="index.html#features"><!-- content --><p>Features</p></a>
+     <a class="nonblock nontext anim_swing clearfix pinned-colelem" id="u7151-4" href="index.html#getting-started"><!-- content --><p>Getting Started</p></a>
+     <a class="nonblock nontext anim_swing clearfix pinned-colelem" id="u8826-4" href="index.html#support-and-feedback"><!-- content --><p>Support</p></a>
+     <div class="SlideShowWidget clearfix colelem" id="slideshowu24199"><!-- none box -->
+      <div class="popup_anchor" id="u24200popup">
+       <div class="SlideShowContentPanel clearfix" id="u24200"><!-- stack box -->
+        <div class="SSSlide clip_frame grpelem" id="u24446"><!-- svg -->
+         <img class="svg ImageInclude shared_content" id="u24439" src="images/blank.gif?crc=4208392903" data-src="images/artwork-2.svg?crc=3942736325" data-width="301" data-height="77" alt="" data-mu-svgfallback="images/artwork%202_poster_.png?crc=4267923699" data-content-guid="u24439_content"/>
+        </div>
+        <div class="SSSlide invi clip_frame grpelem" id="u24261"><!-- svg -->
+         <img class="svg ImageInclude shared_content" id="u24255" src="images/blank.gif?crc=4208392903" data-src="images/artwork-3.svg?crc=235276036" data-width="248" data-height="64" alt="" data-mu-svgfallback="images/artwork%203_poster_.png?crc=360626270" data-content-guid="u24255_content"/>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="clearfix colelem shared_content" id="u737-10" data-content-guid="u737-10_content"><!-- content -->
+      <p>Language Agnostic,</p>
+      <p>DSL free,</p>
+      <p>Mercury Free,</p>
+      <p>Systems Management for Developers</p>
+     </div>
+     <div class="clearfix colelem shared_content" id="u23670-4" data-content-guid="u23670-4_content"><!-- content -->
+      <p>Find out more</p>
+     </div>
+     <a class="nonblock nontext anim_swing clip_frame colelem" id="u24730" href="index.html#about"><!-- svg --><img class="svg temp_no_img_src" id="u24731" data-orig-src="images/artwork-5.svg?crc=17376694" width="40" height="40" alt="" data-mu-svgfallback="images/artwork%205_poster_.png?crc=4237089748" src="images/blank.gif?crc=4208392903"/></a>
+     <a class="anchor_item colelem shared_content" id="about" data-content-guid="about_content"></a>
+     <div class="browser_width mse_pre_init shared_content" id="u38201-bw" data-content-guid="u38201-bw_content">
+      <div class="gradient" id="u38201"><!-- simple frame --></div>
+     </div>
+     <div class="clearfix colelem" id="pu1370-4"><!-- group -->
+      <div class="clearfix grpelem shared_content" id="u1370-4" data-content-guid="u1370-4_content"><!-- content -->
+       <p id="u1370-2"><span class="Section-Intro-Paragraph" id="u1370">Managing servers can be a tricky business. Most servers have multiple services running on them, with even more configuration files, not to mention their dependencies. You might get it right once, but how much debugging did that take? What step did you do first, and what did you do about that error message again?</span></p>
+      </div>
+      <div class="grpelem shared_content" id="u16777" data-content-guid="u16777_content"><!-- simple frame --></div>
+      <div class="clearfix ose_pre_init grpelem shared_content" id="u10535-8" data-content-guid="u10535-8_content"><!-- content -->
+       <p id="u10535-2"><span class="Section-Intro-Paragraph" id="u10535">Fortunately,</span></p>
+       <p id="u10535-4"><span class="Section-Intro-Paragraph" id="u10535-3">Intecture</span></p>
+       <p id="u10535-6"><span class="Section-Intro-Paragraph" id="u10535-5">can help.</span></p>
+      </div>
+      <div class="clearfix grpelem" id="u47138"><!-- column -->
+       <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3053" href="index.html#top"><!-- simple frame --></a>
+       <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3054" href="index.html#about"><!-- simple frame --></a>
+       <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3055" href="index.html#features"><!-- simple frame --></a>
+       <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3056" href="index.html#getting-started"><!-- simple frame --></a>
+       <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3266" href="index.html#support-and-feedback"><!-- simple frame --></a>
+      </div>
+     </div>
+     <div class="clip_frame colelem shared_content" id="u13445" data-content-guid="u13445_content"><!-- svg -->
+      <img class="svg temp_no_img_src" id="u13443" data-orig-src="images/pasted-svg-0x0.svg?crc=3968232463" width="2" height="2" alt="" data-mu-svgfallback="images/pasted%20svg%200x0_poster_.png?crc=395010800" src="images/blank.gif?crc=4208392903"/>
+     </div>
+     <div class="clip_frame colelem shared_content" id="u13455" data-content-guid="u13455_content"><!-- svg -->
+      <img class="svg temp_no_img_src" id="u13453" data-orig-src="images/pasted-svg-0x02.svg?crc=3968232463" width="2" height="2" alt="" data-mu-svgfallback="images/pasted%20svg%200x0_poster_2.png?crc=395010800" src="images/blank.gif?crc=4208392903"/>
+     </div>
+     <div class="clip_frame colelem shared_content" id="u13465" data-content-guid="u13465_content"><!-- svg -->
+      <img class="svg temp_no_img_src" id="u13463" data-orig-src="images/pasted-svg-0x03.svg?crc=3968232463" width="2" height="2" alt="" data-mu-svgfallback="images/pasted%20svg%200x0_poster_3.png?crc=395010800" src="images/blank.gif?crc=4208392903"/>
+     </div>
+     <div class="clip_frame colelem shared_content" id="u13475" data-content-guid="u13475_content"><!-- svg -->
+      <img class="svg temp_no_img_src" id="u13473" data-orig-src="images/pasted-svg-0x04.svg?crc=3968232463" width="2" height="2" alt="" data-mu-svgfallback="images/pasted%20svg%200x0_poster_4.png?crc=395010800" src="images/blank.gif?crc=4208392903"/>
+     </div>
+     <div class="clearfix colelem" id="pu47212"><!-- group -->
+      <div class="clearfix grpelem shared_content" id="u47212" data-content-guid="u47212_content"><!-- column -->
+       <div class="clip_frame colelem" id="u36693"><!-- svg -->
+        <img class="svg temp_no_img_src" id="u68300" data-orig-src="images/artwork-43.svg?crc=3849643082" width="290" height="156" alt="" data-mu-svgfallback="images/artwork%2043_poster_.png?crc=173420103" src="images/blank.gif?crc=4208392903"/>
+       </div>
+       <div class="Caption-1 clearfix colelem" id="u36252-4"><!-- content -->
+        <p id="u36252-2"><span class="Caption" id="u36252">Intecture is built around a library-based API with simple abstractions to help you create powerful, automated configuration scripts.</span></p>
+       </div>
+      </div>
+      <div class="clearfix grpelem shared_content" id="u54757" data-content-guid="u54757_content"><!-- column -->
+       <div class="clip_frame colelem" id="u36703"><!-- svg -->
+        <img class="svg temp_no_img_src" id="u68163" data-orig-src="images/artwork-42.svg?crc=3999843685" width="205" height="222" alt="" data-mu-svgfallback="images/artwork%2042_poster_.png?crc=227607403" src="images/blank.gif?crc=4208392903"/>
+       </div>
+       <div class="Caption-1 clearfix colelem" id="u36246-4"><!-- content -->
+        <p id="u36246-2"><span class="Caption" id="u36246">Better yet, all the abstractions are compatible across platforms, so you don’t have to worry about mixing OSes.</span></p>
+       </div>
+      </div>
+      <div class="clearfix grpelem shared_content" id="u67636" data-content-guid="u67636_content"><!-- column -->
+       <div class="clip_frame colelem" id="u67638"><!-- svg -->
+        <img class="svg temp_no_img_src" id="u67639" data-orig-src="images/artwork-19.svg?crc=4043650662" width="269" height="244" alt="" data-mu-svgfallback="images/artwork%2019_poster_.png?crc=4279317465" src="images/blank.gif?crc=4208392903"/>
+       </div>
+       <div class="Caption-1 clearfix colelem" id="u67637-4"><!-- content -->
+        <p>Intecture helps you scale efficiently. With all your configuration centralised, you can have 1 or 1000 servers.</p>
+       </div>
+      </div>
+     </div>
+     <a class="nonblock nontext anim_swing clip_frame colelem" id="u1823" href="index.html#features"><!-- svg --><img class="svg temp_no_img_src" id="u15317" data-orig-src="images/artwork-5.svg?crc=17376694" width="40" height="40" alt="" data-mu-svgfallback="images/artwork%205_poster_.png?crc=4237089748" src="images/blank.gif?crc=4208392903"/></a>
+     <a class="anchor_item colelem shared_content" id="features" data-content-guid="features_content"></a>
+     <div class="browser_width mse_pre_init shared_content" id="u38390-bw" data-content-guid="u38390-bw_content">
+      <div class="gradient" id="u38390"><!-- simple frame --></div>
+     </div>
+     <div class="clearfix colelem shared_content" id="u1411-4" data-content-guid="u1411-4_content"><!-- content -->
+      <p id="u1411-2"><span class="Section-Title" id="u1411">Features</span></p>
+     </div>
+     <div class="clearfix colelem" id="ppu30643"><!-- group -->
+      <div class="clearfix grpelem" id="pu30643"><!-- column -->
+       <div class="clearfix colelem" id="u30643"><!-- group -->
+        <div class="clearfix grpelem" id="ppu30628"><!-- column -->
+         <div class="clearfix colelem shared_content" id="pu30628" data-content-guid="pu30628_content"><!-- group -->
+          <div class="clearfix grpelem" id="u30628"><!-- group -->
+           <div class="rounded-corners clearfix grpelem" id="u30081"><!-- group -->
+            <div class="clearfix grpelem" id="u30066-4"><!-- content -->
+             <p>Ruby</p>
+            </div>
+           </div>
+          </div>
+          <div class="clearfix grpelem" id="u30631"><!-- group -->
+           <div class="rounded-corners clearfix grpelem" id="u30084"><!-- group -->
+            <div class="clearfix grpelem" id="u30069-4"><!-- content -->
+             <p>PHP</p>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="clearfix colelem shared_content" id="pu30634" data-content-guid="pu30634_content"><!-- group -->
+          <div class="clearfix grpelem" id="u30634"><!-- group -->
+           <div class="rounded-corners clearfix grpelem" id="u30087"><!-- group -->
+            <div class="clearfix grpelem" id="u30072-5"><!-- content -->
+             <p id="u30072">&nbsp;</p>
+             <p id="u30072-3">C</p>
+            </div>
+           </div>
+          </div>
+          <div class="clearfix grpelem" id="u30637"><!-- group -->
+           <div class="rounded-corners grpelem" id="u30090"><!-- simple frame --></div>
+           <div class="clearfix grpelem" id="u30075-5"><!-- content -->
+            <p>&nbsp;</p>
+            <p>Rust</p>
+           </div>
+          </div>
+          <div class="clearfix grpelem" id="u30640"><!-- group -->
+           <div class="rounded-corners grpelem" id="u30093"><!-- simple frame --></div>
+           <div class="clearfix grpelem" id="u30078-6"><!-- content -->
+            <p id="u30078">&nbsp;</p>
+            <p id="u30078-2">&nbsp;</p>
+            <p id="u30078-4">C#</p>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="Caption-1 clearfix grpelem shared_content" id="u1426-6" data-content-guid="u1426-6_content"><!-- content -->
+         <p id="u1426-2">Multi-Lingual</p>
+         <p id="u1426-4">Intecture is capable of binding to almost any programming language there is. It currently supports C, PHP and Rust. More bindings are on their way!</p>
+        </div>
+       </div>
+       <div class="clearfix colelem" id="u55157"><!-- group -->
+        <div class="clearfix grpelem shared_content" id="u30646" data-content-guid="u30646_content"><!-- group -->
+         <div class="Caption-2-Big clearfix grpelem" id="u1432-6"><!-- content -->
+          <p id="u1432-2">No magic</p>
+          <p id="u1432-4">Managing servers shouldn’t be rocket science. We don’t multi-parse, transform, inject into, DSL-ify, lick or sing to your code. We run your code. Once. You can GDB and xdebug until your heart’s content.</p>
+         </div>
+        </div>
+        <div class="clip_frame grpelem shared_content" id="u32812" data-content-guid="u32812_content"><!-- svg -->
+         <img class="svg temp_no_img_src" id="u64911" data-orig-src="images/artwork-39.svg?crc=3969270467" width="184" height="184" alt="" data-mu-svgfallback="images/artwork%2039_poster_.png?crc=325216446" src="images/blank.gif?crc=4208392903"/>
+        </div>
+       </div>
+      </div>
+      <div class="clearfix grpelem" id="pu55153"><!-- column -->
+       <div class="clearfix colelem" id="u55153"><!-- group -->
+        <div class="clip_frame grpelem shared_content" id="u32822" data-content-guid="u32822_content"><!-- svg -->
+         <img class="svg temp_no_img_src" id="u32820" data-orig-src="images/pasted-svg-3897x460.svg?crc=1553673" width="147" height="173" alt="" data-mu-svgfallback="images/pasted%20svg%203897x460_poster_.png?crc=316050807" src="images/blank.gif?crc=4208392903"/>
+        </div>
+        <div class="clearfix grpelem shared_content" id="u30649" data-content-guid="u30649_content"><!-- group -->
+         <div class="Caption-1 clearfix grpelem" id="u1429-6"><!-- content -->
+          <p id="u1429-2">Library-based API</p>
+          <p id="u1429-4">Intecture’s API library gives you the building blocks to manage your servers effectively. It looks and feels just like any other library you’ve used. And it works across platforms so you don’t have to!</p>
+         </div>
+        </div>
+       </div>
+       <div class="clearfix colelem" id="u55161"><!-- group -->
+        <div class="clearfix grpelem shared_content" id="u30652" data-content-guid="u30652_content"><!-- group -->
+         <div class="Caption-1 clearfix grpelem" id="u1435-6"><!-- content -->
+          <p id="u1435-2">Self-contained</p>
+          <p id="u1435-4">Intecture only requires a lightweight, dependency free agent to run on your servers. This means you don’t need to install interpreters and project dependencies onto every server you manage.</p>
+         </div>
+        </div>
+        <div class="clip_frame grpelem shared_content" id="u32832" data-content-guid="u32832_content"><!-- svg -->
+         <img class="svg temp_no_img_src" id="u32830" data-orig-src="images/pasted-svg-57552x498.svg?crc=165866202" width="210" height="182" alt="" data-mu-svgfallback="images/pasted%20svg%2057552x498_poster_.png?crc=427620185" src="images/blank.gif?crc=4208392903"/>
+        </div>
+       </div>
+      </div>
+      <div class="clearfix grpelem" id="u56786"><!-- column -->
+       <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3089" href="index.html#top"><!-- simple frame --></a>
+       <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3065" href="index.html#about"><!-- simple frame --></a>
+       <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3066" href="index.html#features"><!-- simple frame --></a>
+       <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3067" href="index.html#getting-started"><!-- simple frame --></a>
+       <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3068" href="index.html#support-and-feedback"><!-- simple frame --></a>
+      </div>
+     </div>
+     <a class="nonblock nontext anim_swing clip_frame colelem" id="u1406" href="index.html#getting-started"><!-- svg --><img class="svg temp_no_img_src" id="u15327" data-orig-src="images/artwork-5.svg?crc=17376694" width="40" height="40" alt="" data-mu-svgfallback="images/artwork%205_poster_.png?crc=4237089748" src="images/blank.gif?crc=4208392903"/></a>
+     <a class="anchor_item colelem shared_content" id="getting-started" data-content-guid="getting-started_content"></a>
+     <div class="browser_width mse_pre_init shared_content" id="u38517-bw" data-content-guid="u38517-bw_content">
+      <div class="gradient" id="u38517"><!-- simple frame --></div>
+     </div>
+     <div class="clearfix colelem shared_content" id="u1438-4" data-content-guid="u1438-4_content"><!-- content -->
+      <p id="u1438-2"><span class="Section-Title" id="u1438">Getting Started</span></p>
+     </div>
+     <div class="clearfix colelem" id="pu33532"><!-- group -->
+      <div class="grpelem" id="u33532"><!-- simple frame --></div>
+      <div class="grpelem" id="u38861"><!-- simple frame --></div>
+      <div class="clearfix grpelem" id="u53823"><!-- group -->
+       <div class="rounded-corners shadow clearfix grpelem" id="u38858"><!-- group -->
+        <div class="clip_frame grpelem" id="u33483"><!-- svg -->
+         <img class="svg temp_no_img_src" id="u37049" data-orig-src="images/artwork-27.svg?crc=225537676" width="206" height="104" alt="" data-mu-svgfallback="images/artwork%2027_poster_.png?crc=216304491" src="images/blank.gif?crc=4208392903"/>
+        </div>
+       </div>
+      </div>
+      <div class="clearfix grpelem shared_content" id="u53831" data-content-guid="u53831_content"><!-- group -->
+       <div class="rounded-corners shadow clearfix grpelem" id="u4445"><!-- group -->
+        <div class="clip_frame grpelem" id="u33493"><!-- svg -->
+         <img class="svg temp_no_img_src" id="u60939" data-orig-src="images/artwork-29.svg?crc=3932644959" width="149" height="82" alt="" data-mu-svgfallback="images/artwork%2029_poster_.png?crc=4157994678" src="images/blank.gif?crc=4208392903"/>
+        </div>
+       </div>
+      </div>
+      <div class="clearfix grpelem shared_content" id="u38852" data-content-guid="u38852_content"><!-- group -->
+       <div class="rounded-corners shadow clearfix grpelem" id="u4451"><!-- group -->
+        <div class="clip_frame grpelem" id="u33503"><!-- svg -->
+         <img class="svg temp_no_img_src" id="u33498" data-orig-src="images/artwork-24.svg?crc=3839890565" width="103" height="123" alt="" data-mu-svgfallback="images/artwork%2024_poster_.png?crc=4139258372" src="images/blank.gif?crc=4208392903"/>
+        </div>
+        <div class="clip_frame grpelem" id="u33508"><!-- svg -->
+         <img class="svg temp_no_img_src" id="u33509" data-orig-src="images/artwork-24.svg?crc=3839890565" width="103" height="123" alt="" data-mu-svgfallback="images/artwork%2024_poster_.png?crc=4139258372" src="images/blank.gif?crc=4208392903"/>
+        </div>
+        <div class="clip_frame grpelem" id="u33517"><!-- svg -->
+         <img class="svg temp_no_img_src" id="u33518" data-orig-src="images/artwork-24.svg?crc=3839890565" width="103" height="123" alt="" data-mu-svgfallback="images/artwork%2024_poster_.png?crc=4139258372" src="images/blank.gif?crc=4208392903"/>
+        </div>
+       </div>
+      </div>
+      <div class="clearfix grpelem" id="u53827"><!-- group -->
+       <div class="rounded-corners shadow clearfix grpelem" id="u38864"><!-- group -->
+        <div class="clip_frame grpelem" id="u34004"><!-- svg -->
+         <img class="svg temp_no_img_src" id="u33999" data-orig-src="images/book.svg?crc=3920279782" width="55" height="86" alt="" data-mu-svgfallback="images/book_poster_.png?crc=293054130" src="images/blank.gif?crc=4208392903"/>
+        </div>
+       </div>
+      </div>
+      <div class="clip_frame grpelem" id="u60957"><!-- svg -->
+       <img class="svg temp_no_img_src" id="u60978" data-orig-src="images/artwork-32.svg?crc=56903575" width="58" height="53" alt="" data-mu-svgfallback="images/artwork%2032_poster_.png?crc=183301695" src="images/blank.gif?crc=4208392903"/>
+      </div>
+      <div class="clearfix grpelem shared_content" id="u61555" data-content-guid="u61555_content"><!-- group -->
+       <div class="clearfix grpelem" id="u61426"><!-- group -->
+        <div class="rounded-corners shadow grpelem" id="u61427"><!-- simple frame --></div>
+       </div>
+       <div class="clip_frame grpelem" id="u61544"><!-- svg -->
+        <img class="svg temp_no_img_src" id="u61542" data-orig-src="images/pasted-svg-36507x222.svg?crc=57469362" width="75" height="45" alt="" data-mu-svgfallback="images/pasted%20svg%2036507x222_poster_.png?crc=199759478" src="images/blank.gif?crc=4208392903"/>
+       </div>
+      </div>
+      <div class="clearfix grpelem shared_content" id="u69011" data-content-guid="u69011_content"><!-- group -->
+       <div class="clearfix grpelem" id="u69012"><!-- group -->
+        <div class="rounded-corners shadow grpelem" id="u69013"><!-- simple frame --></div>
+       </div>
+      </div>
+      <div class="clearfix grpelem" id="u65488"><!-- group -->
+       <div class="clearfix grpelem shared_content" id="u64985" data-content-guid="u64985_content"><!-- group -->
+        <div class="clearfix grpelem" id="u64988"><!-- group -->
+         <div class="rounded-corners shadow grpelem" id="u64989"><!-- simple frame --></div>
+        </div>
+       </div>
+       <div class="clip_frame grpelem" id="u65044"><!-- svg -->
+        <img class="svg temp_no_img_src" id="u65042" data-orig-src="images/pasted-svg-164892x1061.svg?crc=154737990" width="37" height="24" alt="" data-mu-svgfallback="images/pasted%20svg%20164892x1061_poster_.png?crc=3972689141" src="images/blank.gif?crc=4208392903"/>
+       </div>
+      </div>
+      <div class="clearfix grpelem" id="u65492"><!-- group -->
+       <div class="clearfix grpelem shared_content" id="u65495" data-content-guid="u65495_content"><!-- group -->
+        <div class="clearfix grpelem" id="u65496"><!-- group -->
+         <div class="rounded-corners shadow grpelem" id="u65497"><!-- simple frame --></div>
+        </div>
+       </div>
+       <div class="clip_frame grpelem" id="u65493"><!-- svg -->
+        <img class="svg temp_no_img_src" id="u65494" data-orig-src="images/pasted-svg-164892x1061.svg?crc=154737990" width="37" height="24" alt="" data-mu-svgfallback="images/pasted%20svg%20164892x1061_poster_.png?crc=3972689141" src="images/blank.gif?crc=4208392903"/>
+       </div>
+      </div>
+      <div class="clip_frame grpelem" id="u69042"><!-- svg -->
+       <img class="svg temp_no_img_src" id="u69043" data-orig-src="images/pasted-svg-82585x501.svg?crc=423322209" width="75" height="46" alt="" data-mu-svgfallback="images/pasted%20svg%2082585x501_poster_.png?crc=4021377316" src="images/blank.gif?crc=4208392903"/>
+      </div>
+     </div>
+     <div class="clearfix colelem" id="pu38843"><!-- group -->
+      <div class="clearfix grpelem shared_content" id="u38843" data-content-guid="u38843_content"><!-- group -->
+       <div class="rounded-corners grpelem" id="u33526"><!-- simple frame --></div>
+       <div class="clearfix grpelem" id="u33529-4"><!-- content -->
+        <p>1. Write your code</p>
+       </div>
+      </div>
+      <div class="clearfix grpelem shared_content" id="u38846" data-content-guid="u38846_content"><!-- group -->
+       <div class="rounded-corners grpelem" id="u33547"><!-- simple frame --></div>
+       <div class="clearfix grpelem" id="u33544-4"><!-- content -->
+        <p>2. Run your code</p>
+       </div>
+      </div>
+      <div class="clearfix grpelem shared_content" id="u61371" data-content-guid="u61371_content"><!-- group -->
+       <div class="rounded-corners grpelem" id="u61373"><!-- simple frame --></div>
+       <div class="clearfix grpelem" id="u61372-4"><!-- content -->
+        <p>3. Take a break</p>
+       </div>
+      </div>
+     </div>
+     <div class="clearfix colelem" id="pu10624"><!-- group -->
+      <div class="shadow clearfix grpelem" id="u10624"><!-- group -->
+       <div class="clearfix grpelem" id="pu1832"><!-- column -->
+        <div class="rounded-corners clearfix colelem" id="u1832"><!-- group -->
+         <div class="clip_frame grpelem" id="u67739"><!-- svg -->
+          <img class="svg temp_no_img_src" id="u67740" data-orig-src="images/book.svg?crc=3920279782" width="38" height="60" alt="" data-mu-svgfallback="images/book_poster_.png?crc=293054130" src="images/blank.gif?crc=4208392903"/>
+         </div>
+        </div>
+        <div class="rounded-corners clearfix colelem" id="u1838"><!-- group -->
+         <div class="clip_frame grpelem" id="u67755"><!-- svg -->
+          <img class="svg temp_no_img_src" id="u67756" data-orig-src="images/pasted-svg-164892x1061.svg?crc=154737990" width="56" height="36" alt="" data-mu-svgfallback="images/pasted%20svg%20164892x1061_poster_.png?crc=3972689141" src="images/blank.gif?crc=4208392903"/>
+         </div>
+        </div>
+       </div>
+       <div class="clearfix grpelem" id="pu1844-8"><!-- column -->
+        <div class="Caption-2-Big clearfix colelem shared_content" id="u1844-8" data-content-guid="u1844-8_content"><!-- content -->
+         <p id="u1844-2">API</p>
+         <p id="u1844-4">betweenlines/intecture-api</p>
+         <p id="u1844-6">The API component gives you abstractions (“primitives”) to configure your server.</p>
+        </div>
+        <div class="Caption-2-Big clearfix colelem shared_content" id="u1850-8" data-content-guid="u1850-8_content"><!-- content -->
+         <p id="u1850-2">Auth Server</p>
+         <p id="u1850-4">betweenlines/intecture-auth</p>
+         <p id="u1850-6">The Auth component provides a centralised service for authenticating users and nodes. This means that you don’t have to manage public keys in multiple places.</p>
+        </div>
+       </div>
+       <div class="clearfix grpelem" id="pu1835"><!-- column -->
+        <div class="rounded-corners clearfix colelem" id="u1835"><!-- group -->
+         <div class="clip_frame grpelem" id="u67771"><!-- svg -->
+          <img class="svg temp_no_img_src" id="u67772" data-orig-src="images/pasted-svg-36507x222.svg?crc=57469362" width="52" height="32" alt="" data-mu-svgfallback="images/pasted%20svg%2036507x222_poster_.png?crc=199759478" src="images/blank.gif?crc=4208392903"/>
+         </div>
+        </div>
+        <div class="rounded-corners clearfix colelem" id="u1841"><!-- group -->
+         <div class="clip_frame grpelem" id="u67789"><!-- svg -->
+          <img class="svg temp_no_img_src" id="u67787" data-orig-src="images/pasted-svg-82585x501.svg?crc=423322209" width="57" height="35" alt="" data-mu-svgfallback="images/pasted%20svg%2082585x501_poster_.png?crc=4021377316" src="images/blank.gif?crc=4208392903"/>
+         </div>
+        </div>
+       </div>
+       <div class="clearfix grpelem" id="pu1847-8"><!-- column -->
+        <div class="Caption-2-Big clearfix colelem shared_content" id="u1847-8" data-content-guid="u1847-8_content"><!-- content -->
+         <p id="u1847-2">CLI</p>
+         <p id="u1847-4">betweenlines/intecture-cli</p>
+         <p id="u1847-6">The CLI component allows you to run your code, and manage users and nodes from the command line.</p>
+        </div>
+        <div class="Caption-2-Big clearfix colelem shared_content" id="u1853-8" data-content-guid="u1853-8_content"><!-- content -->
+         <p id="u1853-2">Agent</p>
+         <p id="u1853-4">betweenlines/intecture-agent</p>
+         <p id="u1853-6">The Agent component lives on your managed servers and receives requests from the API to run commands. The Agent contains the real smarts for managing your servers.</p>
+        </div>
+       </div>
+      </div>
+      <div class="clearfix grpelem" id="u56790"><!-- column -->
+       <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3269" href="index.html#top"><!-- simple frame --></a>
+       <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3270" href="index.html#about"><!-- simple frame --></a>
+       <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3271" href="index.html#features"><!-- simple frame --></a>
+       <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3272" href="index.html#getting-started"><!-- simple frame --></a>
+       <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3273" href="index.html#support-and-feedback"><!-- simple frame --></a>
+      </div>
+     </div>
+     <div class="clearfix colelem shared_content" id="u4454-4" data-content-guid="u4454-4_content"><!-- content -->
+      <p>Basic Usage</p>
+     </div>
+     <div class="PamphletWidget clearfix colelem" id="pamphletu39006"><!-- none box -->
+      <div class="ThumbGroup clearfix grpelem" id="u39007"><!-- none box -->
+       <div class="popup_anchor">
+        <div class="Thumb popup_element clearfix" id="u39009"><!-- group -->
+         <div class="clearfix grpelem" id="u39147-4"><!-- content -->
+          <p>C</p>
+         </div>
+        </div>
+       </div>
+       <div class="popup_anchor">
+        <div class="Thumb popup_element clearfix" id="u65124"><!-- group -->
+         <div class="clearfix grpelem" id="u65293-4"><!-- content -->
+          <p>PHP</p>
+         </div>
+        </div>
+       </div>
+       <div class="popup_anchor">
+        <div class="Thumb popup_element clearfix" id="u65156"><!-- group -->
+         <div class="clearfix grpelem" id="u65299-4"><!-- content -->
+          <p>Rust</p>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="popup_anchor" id="u39017popup">
+       <div class="ContainerGroup clearfix" id="u39017"><!-- stack box -->
+        <div class="Container clearfix grpelem" id="u39019"><!-- column -->
+         <div class="shadow clearfix colelem" id="u65227"><!-- group -->
+          <div class="clearfix grpelem" id="u65116"><!-- group -->
+           <img class="grpelem temp_no_img_src" id="u39055-13" alt="1. Let’s install Intecture using the auto-installer: curl -sSf https://get.intecture.io | sh 2. Create an Intecture project using the CLI: incli init my_project C" width="388" height="150" data-orig-src="images/u39055-13.png?crc=4162458950" data-hidpi-src="images/u39055-13_2x.png?crc=173140413" src="images/blank.gif?crc=4208392903"/><!-- rasterized frame -->
+          </div>
+          <img class="grpelem temp_no_img_src" id="u65120-12" alt="3. Write your configuration code 4. Run your code! Don’t forget to compile first if you need to. incli run my-server.example.com" width="388" height="151" data-orig-src="images/u65120-12.png?crc=4101720494" data-hidpi-src="images/u65120-12_2x.png?crc=361328893" src="images/blank.gif?crc=4208392903"/><!-- rasterized frame -->
+         </div>
+         <div class="shadow clearfix colelem" id="u39052"><!-- group -->
+          <div class="shadow rounded-corners clearfix grpelem" id="u39053"><!-- group -->
+           <img class="grpelem temp_no_img_src" id="u39054-246" alt="extern crate inapi; use inapi::{Command, Directory, DirectoryOpts, File, Host, Package, PackageResult, Service, ServiceRunnable, Telemetry}; use std::env; use std::process::exit; fn main() { let args: Vec&lt;_&gt; = env::args().collect(); if args.len() &lt; 2 { println!(&quot;Usage: incli run &lt;server_host_or_ip&gt;&quot;); exit(1); } let mut host = Host::new(); host.connect(&amp;args[1], 7101, 7102, 7103).unwrap(); let mut pkg = Package::new(&amp;mut host, &quot;nginx&quot;, None).unwrap(); if pkg.is_installed() { println!(&quot;Nginx is installed&quot;); } else { println!(“Installing Nginx...&quot;); if let PackageResult::Result(cmd) = pkg.install(&amp;mut host).unwrap() { assert_eq!(cmd.exit_code, 0); println!(“Installed Nginx”); } let service = Service::new_service(ServiceRunnable::Service(&quot;n ginx&quot;), None); let enable = service.action(&amp;mut host, &quot;enable&quot;).unwrap(); assert_eq!(enable.exit_code, 0); let start = service.action(&amp;mut host, &quot;start&quot;).unwrap(); assert_eq!(start.exit_code, 0); }" width="653" height="765" data-orig-src="images/u39054-246.png?crc=260599608" data-hidpi-src="images/u39054-246_2x.png?crc=3978346753" src="images/blank.gif?crc=4208392903"/><!-- rasterized frame -->
+          </div>
+         </div>
+        </div>
+        <div class="Container invi clearfix grpelem" id="u65133"><!-- column -->
+         <div class="shadow clearfix colelem" id="u65747"><!-- group -->
+          <div class="clearfix grpelem" id="u65748"><!-- group -->
+           <img class="grpelem temp_no_img_src" id="u65749-13" alt="1. Let’s install Intecture using the auto-installer: curl -sSf https://get.intecture.io | sh 2. Create an Intecture project using the CLI: incli init my_project PHP" width="388" height="150" data-orig-src="images/u65749-13.png?crc=4081255774" data-hidpi-src="images/u65749-13_2x.png?crc=514964999" src="images/blank.gif?crc=4208392903"/><!-- rasterized frame -->
+          </div>
+          <img class="grpelem temp_no_img_src" id="u65753-12" alt="3. Write your configuration code 4. Run your code! Don’t forget to compile first if you need to. incli run my-server.example.com" width="388" height="151" data-orig-src="images/u65753-12.png?crc=4101720494" data-hidpi-src="images/u65753-12_2x.png?crc=361328893" src="images/blank.gif?crc=4208392903"/><!-- rasterized frame -->
+         </div>
+         <div class="shadow clearfix colelem" id="u65750"><!-- group -->
+          <div class="shadow rounded-corners clearfix grpelem" id="u65751"><!-- group -->
+           <img class="grpelem temp_no_img_src" id="u65752-246" alt="extern crate inapi; use inapi::{Command, Directory, DirectoryOpts, File, Host, Package, PackageResult, Service, ServiceRunnable, Telemetry}; use std::env; use std::process::exit; fn main() { let args: Vec&lt;_&gt; = env::args().collect(); if args.len() &lt; 2 { println!(&quot;Usage: incli run &lt;server_host_or_ip&gt;&quot;); exit(1); } let mut host = Host::new(); host.connect(&amp;args[1], 7101, 7102, 7103).unwrap(); let mut pkg = Package::new(&amp;mut host, &quot;nginx&quot;, None).unwrap(); if pkg.is_installed() { println!(&quot;Nginx is installed&quot;); } else { println!(“Installing Nginx...&quot;); if let PackageResult::Result(cmd) = pkg.install(&amp;mut host).unwrap() { assert_eq!(cmd.exit_code, 0); println!(“Installed Nginx”); } let service = Service::new_service(ServiceRunnable::Service(&quot;n ginx&quot;), None); let enable = service.action(&amp;mut host, &quot;enable&quot;).unwrap(); assert_eq!(enable.exit_code, 0); let start = service.action(&amp;mut host, &quot;start&quot;).unwrap(); assert_eq!(start.exit_code, 0); }" width="653" height="765" data-orig-src="images/u65752-246.png?crc=260599608" data-hidpi-src="images/u65752-246_2x.png?crc=3978346753" src="images/blank.gif?crc=4208392903"/><!-- rasterized frame -->
+          </div>
+         </div>
+        </div>
+        <div class="Container invi clearfix grpelem" id="u65161"><!-- column -->
+         <div class="shadow clearfix colelem" id="u65819"><!-- group -->
+          <div class="clearfix grpelem" id="u65820"><!-- group -->
+           <img class="grpelem temp_no_img_src" id="u65821-13" alt="1. Let’s install Intecture using the auto-installer: curl -sSf https://get.intecture.io | sh 2. Create an Intecture project using the CLI: incli init my_project Rust" width="388" height="150" data-orig-src="images/u65821-13.png?crc=180101677" data-hidpi-src="images/u65821-13_2x.png?crc=4244534361" src="images/blank.gif?crc=4208392903"/><!-- rasterized frame -->
+          </div>
+          <img class="grpelem temp_no_img_src" id="u65825-12" alt="3. Write your configuration code 4. Run your code! Don’t forget to compile first if you need to. incli run my-server.example.com" width="388" height="151" data-orig-src="images/u65825-12.png?crc=4101720494" data-hidpi-src="images/u65825-12_2x.png?crc=361328893" src="images/blank.gif?crc=4208392903"/><!-- rasterized frame -->
+         </div>
+         <div class="shadow clearfix colelem" id="u65822"><!-- group -->
+          <div class="shadow rounded-corners clearfix grpelem" id="u65823"><!-- group -->
+           <img class="grpelem temp_no_img_src" id="u65824-246" alt="extern crate inapi; use inapi::{Command, Directory, DirectoryOpts, File, Host, Package, PackageResult, Service, ServiceRunnable, Telemetry}; use std::env; use std::process::exit; fn main() { let args: Vec&lt;_&gt; = env::args().collect(); if args.len() &lt; 2 { println!(&quot;Usage: incli run &lt;server_host_or_ip&gt;&quot;); exit(1); } let mut host = Host::new(); host.connect(&amp;args[1], 7101, 7102, 7103).unwrap(); let mut pkg = Package::new(&amp;mut host, &quot;nginx&quot;, None).unwrap(); if pkg.is_installed() { println!(&quot;Nginx is installed&quot;); } else { println!(“Installing Nginx...&quot;); if let PackageResult::Result(cmd) = pkg.install(&amp;mut host).unwrap() { assert_eq!(cmd.exit_code, 0); println!(“Installed Nginx”); } let service = Service::new_service(ServiceRunnable::Service(&quot;n ginx&quot;), None); let enable = service.action(&amp;mut host, &quot;enable&quot;).unwrap(); assert_eq!(enable.exit_code, 0); let start = service.action(&amp;mut host, &quot;start&quot;).unwrap(); assert_eq!(start.exit_code, 0); }" width="653" height="765" data-orig-src="images/u65824-246.png?crc=260599608" data-hidpi-src="images/u65824-246_2x.png?crc=3978346753" src="images/blank.gif?crc=4208392903"/><!-- rasterized frame -->
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="clearfix colelem shared_content" id="u9184-8" data-content-guid="u9184-8_content"><!-- content -->
+      <p>See <span><a class="nonblock" href="https://www.google.com" target="_blank">the documentation</a></span> for more information.</p>
+     </div>
+     <a class="nonblock nontext anim_swing clip_frame colelem shared_content" id="u2869" href="index.html#support-and-feedback" data-content-guid="u2869_content"><!-- svg --><img class="svg temp_no_img_src" id="u15339" data-orig-src="images/artwork-5.svg?crc=17376694" width="40" height="40" alt="" data-mu-svgfallback="images/artwork%205_poster_.png?crc=4237089748" src="images/blank.gif?crc=4208392903"/></a>
+     <a class="anchor_item colelem shared_content" id="support-and-feedback" data-content-guid="support-and-feedback_content"></a>
+     <div class="shadow gradient clearfix colelem" id="u11478"><!-- column -->
+      <div class="clearfix colelem shared_content" id="u2776-4" data-content-guid="u2776-4_content"><!-- content -->
+       <p id="u2776-2"><span class="Section-Title" id="u2776">Support and Feedback</span></p>
+      </div>
+      <div class="clearfix colelem" id="pu2779-22"><!-- group -->
+       <div class="Caption-2-Big clearfix grpelem" id="u2779-22"><!-- content -->
+        <p id="u2779-5" class="shared_content" data-content-guid="u2779-5_content">Documentation can be found at <span><a class="nonblock" href="https://docs.intecture.io/" target="_blank"><span id="u2779-2">docs.intecture.io</span></a></span></p>
+        <p id="u2779-10" class="shared_content" data-content-guid="u2779-10_content">You can stay up to date with the project at <span><a class="nonblock" href="https://announce.intecture.io/" target="_blank"><span id="u2779-7">announce.intecture.io</span></a></span></p>
+        <p id="u2779-15"><span class="shared_content" data-content-guid="u2779-15_0_content">For enterprise support and consulting services, please email </span><span><a class="nonblock" href="mailto:support@intecture.io?subject=Hello%20Intecture%20Support" target="_blank"><span id="u2779-12" class="shared_content" data-content-guid="u2779-12_content">support@intecture.io</span></a></span></p>
+        <p id="u2779-20"><span class="shared_content" data-content-guid="u2779-20_0_content">For any bugs, feature requests etc., please create an issue on </span><span><a class="nonblock" href="https://github.com/Intecture" target="_blank"><span id="u2779-17" class="shared_content" data-content-guid="u2779-17_content">GitHub</span></a></span></p>
+       </div>
+       <div class="clearfix grpelem" id="u67094"><!-- column -->
+        <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3284" href="index.html#top"><!-- simple frame --></a>
+        <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3285" href="index.html#about"><!-- simple frame --></a>
+        <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3286" href="index.html#features"><!-- simple frame --></a>
+        <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3287" href="index.html#getting-started"><!-- simple frame --></a>
+        <a class="nonblock nontext anim_swing rounded-corners colelem" id="u3288" href="index.html#support-and-feedback"><!-- simple frame --></a>
+       </div>
+      </div>
+      <div class="clip_frame colelem shared_content" id="u20788" data-content-guid="u20788_content"><!-- svg -->
+       <img class="svg temp_no_img_src" id="u38706" data-orig-src="images/artwork-28.svg?crc=3768639361" width="59" height="57" alt="" data-mu-svgfallback="images/artwork%2028_poster_.png?crc=3801553203" src="images/blank.gif?crc=4208392903"/>
+      </div>
+     </div>
+     <a class="anchor_item colelem shared_content" id="bottom" data-content-guid="bottom_content"></a>
+     <div class="browser_width colelem" id="u120-bw">
+      <div class="pointer_cursor" id="u120"><!-- column -->
+       <a class="block shared_content" href="https://www.oliverjgoddard.co.uk" data-content-guid="u120_0_content"></a>
+       <div class="clearfix" id="u120_align_to_page">
+        <div class="clearfix colelem" id="ppu12164-4"><!-- group -->
+         <div class="clearfix grpelem" id="pu12164-4"><!-- column -->
+          <div class="clearfix colelem shared_content" id="u12164-4" data-content-guid="u12164-4_content"><!-- content -->
+           <p id="u12164-2">Intecture</p>
+          </div>
+          <a class="nonblock nontext anim_swing clearfix colelem shared_content" id="u9901-4" href="index.html#top" data-content-guid="u9901-4_content"><!-- content --><p id="u9901-2">Home</p></a>
+         </div>
+         <a class="nonblock nontext anim_swing clip_frame grpelem shared_content" id="u128" href="index.html#top" data-content-guid="u128_content"><!-- svg --><img class="svg temp_no_img_src" id="u123" data-orig-src="images/artwork-3.svg?crc=235276036" width="163" height="42" alt="" data-mu-svgfallback="images/artwork%203_poster_.png?crc=360626270" src="images/blank.gif?crc=4208392903"/></a>
+        </div>
+        <a class="nonblock nontext anim_swing clearfix colelem shared_content" id="u9905-4" href="index.html#about" data-content-guid="u9905-4_content"><!-- content --><p id="u9905-2">About</p></a>
+        <a class="nonblock nontext anim_swing clearfix colelem shared_content" id="u9909-4" href="index.html#features" data-content-guid="u9909-4_content"><!-- content --><p id="u9909-2">Features</p></a>
+        <div class="clearfix colelem" id="ppu9913-4"><!-- group -->
+         <div class="clearfix grpelem" id="pu9913-4"><!-- column -->
+          <a class="nonblock nontext anim_swing clearfix colelem shared_content" id="u9913-4" href="index.html#getting-started" data-content-guid="u9913-4_content"><!-- content --><p id="u9913-2">Getting Started</p></a>
+          <a class="nonblock nontext anim_swing clearfix colelem shared_content" id="u9917-4" href="index.html#support-and-feedback" data-content-guid="u9917-4_content"><!-- content --><p id="u9917-2">Support and Feedback</p></a>
+         </div>
+         <div class="clearfix grpelem shared_content" id="u3721" data-content-guid="u3721_content"><!-- group -->
+          <div class="pointer_cursor rounded-corners clearfix grpelem" id="u3723"><!-- group -->
+           <a class="block" href="mailto:info@intecture.io?subject=Hello%20Intecture"></a>
+           <a class="nonblock nontext clearfix grpelem" id="u3722-4" href="mailto:info@intecture.io?subject=Hello%20Intecture"><!-- content --><p>Contact Us</p></a>
+          </div>
+         </div>
+        </div>
+        <div class="colelem shared_content" id="u12160" data-content-guid="u12160_content"><!-- simple frame --></div>
+        <div class="clearfix colelem" id="pu503"><!-- group -->
+         <a class="nonblock nontext clip_frame grpelem shared_content" id="u503" href="https://twitter.com/intecture" target="_blank" data-content-guid="u503_content"><!-- svg --><img class="svg temp_no_img_src" id="u64117" data-orig-src="images/artwork-38.svg?crc=3835247685" width="25" height="20" alt="" data-mu-svgfallback="images/artwork%2038_poster_.png?crc=4125045277" src="images/blank.gif?crc=4208392903"/></a>
+         <a class="nonblock nontext clip_frame grpelem shared_content" id="u64109" href="https://github.com/Intecture" target="_blank" data-content-guid="u64109_content"><!-- svg --><img class="svg temp_no_img_src" id="u64104" data-orig-src="images/artwork-37.svg?crc=70717257" width="21" height="20" alt="" data-mu-svgfallback="images/artwork%2037_poster_.png?crc=3997393084" src="images/blank.gif?crc=4208392903"/></a>
+         <div class="clearfix grpelem shared_content" id="u8175" data-content-guid="u8175_content"><!-- group -->
+          <a class="nonblock nontext anim_swing clearfix grpelem" id="u8159-4" href="index.html#top"><!-- content --><p id="u8159-2">&nbsp;Back to Top</p></a>
+         </div>
+        </div>
+        <div class="clearfix colelem" id="pu159-17"><!-- group -->
+         <div class="clearfix grpelem shared_content" id="u159-17" data-content-guid="u159-17_content"><!-- content -->
+          <p id="u159-8">Copyright © 2015-2016 <span id="u159-2">Between Lines®</span>, All Rights Reserved <span id="u159-4">Intecture®</span> is Copyright © 2015-2016<span id="u159-6"> Between Lines®</span> and Contributors.</p>
+          <p id="u159-15"><span id="u159-9">Intecture </span>is open source software licenced under the MPL2. <span id="u159-11">Intecture® </span>is a trademark of <span id="u159-13">Between Lines®</span> Limited.</p>
+         </div>
+         <div class="clearfix grpelem shared_content" id="u68533" data-content-guid="u68533_content"><!-- group -->
+          <div class="pointer_cursor clearfix grpelem" id="u68534-7"><!-- content -->
+           <a class="block" target="_blank" href="https://www.oliverjgoddard.co.uk"></a>
+           <p id="u68534-5"><a class="nonblock" href="https://www.oliverjgoddard.co.uk" target="_blank"><span id="u68534">&nbsp;</span><span id="u68534-2">Website Design by </span><span id="u68534-3">Goddard Creative</span></a></p>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="breakpoint" id="bp_1000" data-max-width="1000"><!-- responsive breakpoint node -->
+   <div class="clearfix temp_no_id" data-orig-id="page"><!-- column -->
+    <div class="position_content temp_no_id" data-orig-id="page_position_content">
+     <span class="browser_width mse_pre_init placeholder" data-placeholder-for="u37062-bw_content"><!-- placeholder node --></span>
+     <span class="anchor_item colelem placeholder" data-placeholder-for="top_content"><!-- placeholder node --></span>
+     <div class="browser_width temp_no_id" data-orig-id="u94-bw">
+      <span class="pinned-colelem placeholder" data-placeholder-for="u94_content"><!-- placeholder node --></span>
+     </div>
+     <ul class="AccordionWidget clearfix pinned-colelem" id="accordionu43165"><!-- vertical box -->
+      <li class="AccordionPanel clearfix colelem" id="u43243"><!-- vertical box --><div class="AccordionPanelTab clearfix colelem" id="u43246-8"><!-- content --><p id="u43246">&nbsp;</p><p id="u43246-2">&nbsp;</p><p id="u43246-6"><span id="u43246-3">Menu&nbsp; </span><span id="u43246-4">&nbsp;&nbsp; </span><span id="u43246-5"></span></p></div><div class="AccordionPanelContent disn gradient clearfix colelem" id="u43244"><!-- group --><div class="clearfix grpelem" id="u43268-23"><!-- content --><p id="u43268-9"><span><a class="nonblock anim_swing" href="index.html#about"><span id="u43268">About</span></a></span><span id="u43268-5"><br/></span><span><a class="nonblock anim_swing" href="index.html#features"><span id="u43268-6">Features</span></a></span></p><p id="u43268-13"><span><a class="nonblock anim_swing" href="index.html#getting-started"><span id="u43268-10">Getting Started</span></a></span></p><p id="u43268-17"><span><a class="nonblock anim_swing" href="index.html#support-and-feedback"><span id="u43268-14">Support</span></a></span></p><p id="u43268-21"><span><a class="nonblock" href="mailto:info@intecture.io?subject=Hello%20Intecture"><span id="u43268-18">Contact Us</span></a></span></p></div></div></li>
+     </ul>
+     <div class="clip_frame pinned-colelem" id="u46848"><!-- svg -->
+      <img class="svg temp_no_img_src" id="u46844" data-orig-src="images/artwork-3.svg?crc=235276036" width="128" height="33" alt="" data-mu-svgfallback="images/artwork%203_poster_.png?crc=360626270" src="images/blank.gif?crc=4208392903"/>
+     </div>
+     <div class="SlideShowWidget clearfix colelem temp_no_id" data-orig-id="slideshowu24199"><!-- none box -->
+      <div class="popup_anchor temp_no_id" data-orig-id="u24200popup">
+       <div class="SlideShowContentPanel clearfix temp_no_id" data-orig-id="u24200"><!-- stack box -->
+        <div class="SSSlide clip_frame grpelem temp_no_id" data-orig-id="u24446"><!-- svg -->
+         <span class="svg ImageInclude placeholder" data-placeholder-for="u24439_content"><!-- placeholder node --></span>
+        </div>
+        <div class="SSSlide invi clip_frame grpelem temp_no_id" data-orig-id="u24261"><!-- svg -->
+         <span class="svg ImageInclude placeholder" data-placeholder-for="u24255_content"><!-- placeholder node --></span>
+        </div>
+       </div>
+      </div>
+     </div>
+     <span class="clearfix colelem placeholder" data-placeholder-for="u737-10_content"><!-- placeholder node --></span>
+     <span class="clearfix colelem placeholder" data-placeholder-for="u23670-4_content"><!-- placeholder node --></span>
+     <a class="nonblock nontext anim_swing clip_frame colelem temp_no_id" href="index.html#about" data-orig-id="u24730"><!-- svg --><img class="svg temp_no_id temp_no_img_src" data-orig-src="images/artwork-5.svg?crc=17376694" width="30" height="30" alt="" data-mu-svgfallback="images/artwork%205_poster_.png?crc=4237089748" data-orig-id="u24731" src="images/blank.gif?crc=4208392903"/></a>
+     <span class="anchor_item colelem placeholder" data-placeholder-for="about_content"><!-- placeholder node --></span>
+     <span class="browser_width mse_pre_init placeholder" data-placeholder-for="u38201-bw_content"><!-- placeholder node --></span>
+     <div class="clearfix colelem" id="pu13455"><!-- group -->
+      <span class="clip_frame grpelem placeholder" data-placeholder-for="u13455_content"><!-- placeholder node --></span>
+      <span class="clip_frame grpelem placeholder" data-placeholder-for="u13465_content"><!-- placeholder node --></span>
+      <span class="clip_frame grpelem placeholder" data-placeholder-for="u13475_content"><!-- placeholder node --></span>
+      <span class="clearfix grpelem placeholder" data-placeholder-for="u1370-4_content"><!-- placeholder node --></span>
+      <span class="grpelem placeholder" data-placeholder-for="u16777_content"><!-- placeholder node --></span>
+      <span class="clearfix ose_pre_init grpelem placeholder" data-placeholder-for="u10535-8_content"><!-- placeholder node --></span>
+      <span class="clip_frame grpelem placeholder" data-placeholder-for="u13445_content"><!-- placeholder node --></span>
+     </div>
+     <span class="clearfix colelem placeholder" data-placeholder-for="u47212_content"><!-- placeholder node --></span>
+     <span class="clearfix colelem placeholder" data-placeholder-for="u54757_content"><!-- placeholder node --></span>
+     <span class="clearfix colelem placeholder" data-placeholder-for="u67636_content"><!-- placeholder node --></span>
+     <a class="nonblock nontext anim_swing clip_frame colelem temp_no_id" href="index.html#features" data-orig-id="u1823"><!-- svg --><img class="svg temp_no_id temp_no_img_src" data-orig-src="images/artwork-5.svg?crc=17376694" width="30" height="30" alt="" data-mu-svgfallback="images/artwork%205_poster_.png?crc=4237089748" data-orig-id="u15317" src="images/blank.gif?crc=4208392903"/></a>
+     <span class="anchor_item colelem placeholder" data-placeholder-for="features_content"><!-- placeholder node --></span>
+     <span class="browser_width mse_pre_init placeholder" data-placeholder-for="u38390-bw_content"><!-- placeholder node --></span>
+     <span class="clearfix colelem placeholder" data-placeholder-for="u1411-4_content"><!-- placeholder node --></span>
+     <div class="clearfix colelem temp_no_id" data-orig-id="u30643"><!-- column -->
+      <span class="clearfix colelem placeholder" data-placeholder-for="pu30628_content"><!-- placeholder node --></span>
+      <span class="clearfix colelem placeholder" data-placeholder-for="pu30634_content"><!-- placeholder node --></span>
+      <span class="Caption-1 clearfix colelem placeholder" data-placeholder-for="u1426-6_content"><!-- placeholder node --></span>
+     </div>
+     <div class="clearfix colelem temp_no_id" data-orig-id="u55153"><!-- column -->
+      <span class="clip_frame colelem placeholder" data-placeholder-for="u32822_content"><!-- placeholder node --></span>
+      <span class="clearfix colelem placeholder" data-placeholder-for="u30649_content"><!-- placeholder node --></span>
+     </div>
+     <div class="clearfix colelem temp_no_id" data-orig-id="u55157"><!-- column -->
+      <span class="clip_frame colelem placeholder" data-placeholder-for="u32812_content"><!-- placeholder node --></span>
+      <span class="clearfix colelem placeholder" data-placeholder-for="u30646_content"><!-- placeholder node --></span>
+     </div>
+     <div class="clearfix colelem temp_no_id" data-orig-id="u55161"><!-- column -->
+      <span class="clip_frame colelem placeholder" data-placeholder-for="u32832_content"><!-- placeholder node --></span>
+      <span class="clearfix colelem placeholder" data-placeholder-for="u30652_content"><!-- placeholder node --></span>
+     </div>
+     <a class="nonblock nontext anim_swing clip_frame colelem temp_no_id" href="index.html#getting-started" data-orig-id="u1406"><!-- svg --><img class="svg temp_no_id temp_no_img_src" data-orig-src="images/artwork-5.svg?crc=17376694" width="30" height="30" alt="" data-mu-svgfallback="images/artwork%205_poster_.png?crc=4237089748" data-orig-id="u15327" src="images/blank.gif?crc=4208392903"/></a>
+     <span class="anchor_item colelem placeholder" data-placeholder-for="getting-started_content"><!-- placeholder node --></span>
+     <span class="browser_width mse_pre_init placeholder" data-placeholder-for="u38517-bw_content"><!-- placeholder node --></span>
+     <span class="clearfix colelem placeholder" data-placeholder-for="u1438-4_content"><!-- placeholder node --></span>
+     <div class="clearfix colelem" id="pu53823"><!-- group -->
+      <div class="clearfix grpelem temp_no_id" data-orig-id="u53823"><!-- group -->
+       <div class="rounded-corners shadow clearfix grpelem temp_no_id" data-orig-id="u38858"><!-- group -->
+        <div class="clip_frame grpelem temp_no_id" data-orig-id="u33483"><!-- svg -->
+         <img class="svg temp_no_id temp_no_img_src" data-orig-src="images/artwork-27.svg?crc=225537676" width="113" height="57" alt="" data-mu-svgfallback="images/artwork%2027_poster_.png?crc=216304491" data-orig-id="u37049" src="images/blank.gif?crc=4208392903"/>
+        </div>
+       </div>
+      </div>
+      <div class="clearfix grpelem temp_no_id" data-orig-id="u53827"><!-- group -->
+       <div class="rounded-corners shadow clearfix grpelem temp_no_id" data-orig-id="u38864"><!-- group -->
+        <div class="clip_frame grpelem temp_no_id" data-orig-id="u34004"><!-- svg -->
+         <img class="svg temp_no_id temp_no_img_src" data-orig-src="images/book.svg?crc=3920279782" width="42" height="66" alt="" data-mu-svgfallback="images/book_poster_.png?crc=293054130" data-orig-id="u33999" src="images/blank.gif?crc=4208392903"/>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="clearfix colelem" id="pu38861"><!-- group -->
+      <div class="grpelem temp_no_id" data-mu-ie-matrix="progid:DXImageTransform.Microsoft.Matrix(M11=0,M12=-1,M21=1,M22=0,SizingMethod='auto expand')" data-mu-ie-matrix-dx="58" data-mu-ie-matrix-dy="-57" data-orig-id="u38861"><!-- simple frame --></div>
+      <span class="clearfix grpelem placeholder" data-placeholder-for="u38843_content"><!-- placeholder node --></span>
+      <div class="clearfix grpelem temp_no_id" data-orig-id="u65488"><!-- group -->
+       <span class="clearfix grpelem placeholder" data-placeholder-for="u64985_content"><!-- placeholder node --></span>
+       <div class="clip_frame grpelem temp_no_id" data-orig-id="u65044"><!-- svg -->
+        <img class="svg temp_no_id temp_no_img_src" data-orig-src="images/pasted-svg-164892x1061.svg?crc=154737990" width="39" height="25" alt="" data-mu-svgfallback="images/pasted%20svg%20164892x1061_poster_.png?crc=3972689141" data-orig-id="u65042" src="images/blank.gif?crc=4208392903"/>
+       </div>
+      </div>
+     </div>
+     <div class="clearfix colelem" id="pu53831"><!-- group -->
+      <span class="clearfix grpelem placeholder" data-placeholder-for="u53831_content"><!-- placeholder node --></span>
+      <span class="clearfix grpelem placeholder" data-placeholder-for="u61555_content"><!-- placeholder node --></span>
+     </div>
+     <div class="clearfix colelem temp_no_id" data-orig-id="pu33532"><!-- group -->
+      <div class="grpelem temp_no_id" data-mu-ie-matrix="progid:DXImageTransform.Microsoft.Matrix(M11=0,M12=-1,M21=1,M22=0,SizingMethod='auto expand')" data-mu-ie-matrix-dx="61" data-mu-ie-matrix-dy="-61" data-orig-id="u33532"><!-- simple frame --></div>
+      <span class="clearfix grpelem placeholder" data-placeholder-for="u38852_content"><!-- placeholder node --></span>
+      <span class="clearfix grpelem placeholder" data-placeholder-for="u38846_content"><!-- placeholder node --></span>
+      <div class="clip_frame grpelem temp_no_id" data-orig-id="u60957"><!-- svg -->
+       <img class="svg temp_no_id temp_no_img_src" data-orig-src="images/artwork-32.svg?crc=56903575" width="52" height="48" alt="" data-mu-svgfallback="images/artwork%2032_poster_.png?crc=183301695" data-orig-id="u60978" src="images/blank.gif?crc=4208392903"/>
+      </div>
+      <span class="clearfix grpelem placeholder" data-placeholder-for="u69011_content"><!-- placeholder node --></span>
+      <div class="clearfix grpelem temp_no_id" data-orig-id="u65492"><!-- group -->
+       <span class="clearfix grpelem placeholder" data-placeholder-for="u65495_content"><!-- placeholder node --></span>
+       <div class="clip_frame grpelem temp_no_id" data-orig-id="u65493"><!-- svg -->
+        <img class="svg temp_no_id temp_no_img_src" data-orig-src="images/pasted-svg-164892x1061.svg?crc=154737990" width="41" height="26" alt="" data-mu-svgfallback="images/pasted%20svg%20164892x1061_poster_.png?crc=3972689141" data-orig-id="u65494" src="images/blank.gif?crc=4208392903"/>
+       </div>
+      </div>
+      <div class="clip_frame grpelem temp_no_id" data-orig-id="u69042"><!-- svg -->
+       <img class="svg temp_no_id temp_no_img_src" data-orig-src="images/pasted-svg-82585x501.svg?crc=423322209" width="58" height="35" alt="" data-mu-svgfallback="images/pasted%20svg%2082585x501_poster_.png?crc=4021377316" data-orig-id="u69043" src="images/blank.gif?crc=4208392903"/>
+      </div>
+     </div>
+     <span class="clearfix colelem placeholder" data-placeholder-for="u61371_content"><!-- placeholder node --></span>
+     <div class="shadow clearfix colelem temp_no_id" data-orig-id="u10624"><!-- column -->
+      <div class="clearfix colelem temp_no_id" data-orig-id="pu1832"><!-- group -->
+       <div class="rounded-corners clearfix grpelem temp_no_id" data-orig-id="u1832"><!-- group -->
+        <div class="clip_frame grpelem temp_no_id" data-orig-id="u67739"><!-- svg -->
+         <img class="svg temp_no_id temp_no_img_src" data-orig-src="images/book.svg?crc=3920279782" width="21" height="34" alt="" data-mu-svgfallback="images/book_poster_.png?crc=293054130" data-orig-id="u67740" src="images/blank.gif?crc=4208392903"/>
+        </div>
+       </div>
+       <div class="rounded-corners clearfix grpelem temp_no_id" data-orig-id="u1835"><!-- group -->
+        <div class="clip_frame grpelem temp_no_id" data-orig-id="u67771"><!-- svg -->
+         <img class="svg temp_no_id temp_no_img_src" data-orig-src="images/pasted-svg-36507x222.svg?crc=57469362" width="32" height="20" alt="" data-mu-svgfallback="images/pasted%20svg%2036507x222_poster_.png?crc=199759478" data-orig-id="u67772" src="images/blank.gif?crc=4208392903"/>
+        </div>
+       </div>
+      </div>
+      <div class="clearfix colelem temp_no_id" data-orig-id="pu1844-8"><!-- group -->
+       <span class="Caption-2-Big clearfix grpelem placeholder" data-placeholder-for="u1844-8_content"><!-- placeholder node --></span>
+       <span class="Caption-2-Big clearfix grpelem placeholder" data-placeholder-for="u1847-8_content"><!-- placeholder node --></span>
+      </div>
+      <div class="clearfix colelem" id="pu1838"><!-- group -->
+       <div class="rounded-corners clearfix grpelem temp_no_id" data-orig-id="u1838"><!-- group -->
+        <div class="clip_frame grpelem temp_no_id" data-orig-id="u67755"><!-- svg -->
+         <img class="svg temp_no_id temp_no_img_src" data-orig-src="images/pasted-svg-164892x1061.svg?crc=154737990" width="30" height="19" alt="" data-mu-svgfallback="images/pasted%20svg%20164892x1061_poster_.png?crc=3972689141" data-orig-id="u67756" src="images/blank.gif?crc=4208392903"/>
+        </div>
+       </div>
+       <div class="rounded-corners clearfix grpelem temp_no_id" data-orig-id="u1841"><!-- group -->
+        <div class="clip_frame grpelem temp_no_id" data-orig-id="u67789"><!-- svg -->
+         <img class="svg temp_no_id temp_no_img_src" data-orig-src="images/pasted-svg-82585x501.svg?crc=423322209" width="31" height="19" alt="" data-mu-svgfallback="images/pasted%20svg%2082585x501_poster_.png?crc=4021377316" data-orig-id="u67787" src="images/blank.gif?crc=4208392903"/>
+        </div>
+       </div>
+      </div>
+      <div class="clearfix colelem" id="pu1850-8"><!-- group -->
+       <span class="Caption-2-Big clearfix grpelem placeholder" data-placeholder-for="u1850-8_content"><!-- placeholder node --></span>
+       <span class="Caption-2-Big clearfix grpelem placeholder" data-placeholder-for="u1853-8_content"><!-- placeholder node --></span>
+      </div>
+     </div>
+     <span class="clearfix colelem placeholder" data-placeholder-for="u4454-4_content"><!-- placeholder node --></span>
+     <div class="PamphletWidget clearfix colelem" id="pamphletu66539"><!-- none box -->
+      <div class="ThumbGroup clearfix grpelem" id="u66544"><!-- none box -->
+       <div class="popup_anchor">
+        <div class="Thumb popup_element clearfix" id="u66547"><!-- group -->
+         <div class="clearfix grpelem" id="u66887-4"><!-- content -->
+          <p id="u66887-2">C</p>
+         </div>
+        </div>
+       </div>
+       <div class="popup_anchor">
+        <div class="Thumb popup_element clearfix" id="u66546"><!-- group -->
+         <div class="clearfix grpelem" id="u66891-4"><!-- content -->
+          <p id="u66891-2">PHP</p>
+         </div>
+        </div>
+       </div>
+       <div class="popup_anchor">
+        <div class="Thumb popup_element clearfix" id="u66545"><!-- group -->
+         <div class="clearfix grpelem" id="u66897-4"><!-- content -->
+          <p id="u66897-2">Rust</p>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="popup_anchor" id="u66540popup">
+       <div class="ContainerGroup clearfix" id="u66540"><!-- stack box -->
+        <div class="Container clearfix grpelem" id="u66542"><!-- column -->
+         <div class="clearfix colelem" id="u67290"><!-- group -->
+          <div class="shadow clearfix grpelem" id="u67293"><!-- group -->
+           <div class="clearfix grpelem" id="u67291"><!-- group -->
+            <img class="grpelem temp_no_img_src" id="u67292-22" alt="1. Let’s install Intecture using the auto-installer: curl -sSf https://get.intecture.io | sh 2. Create an Intecture project using the CLI: incli init my_project C 3. Write your configuration code 4. Run your code! Don’t forget to compile first if you need to. incli run my-server.example.com" width="414" height="252" data-orig-src="images/u67292-22.png?crc=142354559" data-hidpi-src="images/u67292-22_2x.png?crc=3984970813" src="images/blank.gif?crc=4208392903"/><!-- rasterized frame -->
+           </div>
+          </div>
+         </div>
+         <div class="clearfix colelem" id="u67286"><!-- group -->
+          <div class="shadow clearfix grpelem" id="u67287"><!-- group -->
+           <div class="shadow rounded-corners clearfix grpelem" id="u67288"><!-- group -->
+            <img class="grpelem temp_no_img_src" id="u67289-246" alt="extern crate inapi; use inapi::{Command, Directory, DirectoryOpts, File, Host, Package, PackageResult, Service, ServiceRunnable, Telemetry}; use std::env; use std::process::exit; fn main() { let args: Vec&lt;_&gt; = env::args().collect(); if args.len() &lt; 2 { println!(&quot;Usage: incli run &lt;server_host_or_ip&gt;&quot;); exit(1); } let mut host = Host::new(); host.connect(&amp;args[1], 7101, 7102, 7103).unwrap(); let mut pkg = Package::new(&amp;mut host, &quot;nginx&quot;, None).unwrap(); if pkg.is_installed() { println!(&quot;Nginx is installed&quot;); } else { println!(“Installing Nginx...&quot;); if let PackageResult::Result(cmd) = pkg.install(&amp;mut host).unwrap() { assert_eq!(cmd.exit_code, 0); println!(“Installed Nginx”); } let service = Service::new_service(ServiceRunnable::Service(&quot;n ginx&quot;), None); let enable = service.action(&amp;mut host, &quot;enable&quot;).unwrap(); assert_eq!(enable.exit_code, 0); let start = service.action(&amp;mut host, &quot;start&quot;).unwrap(); assert_eq!(start.exit_code, 0); }" width="403" height="819" data-orig-src="images/u67289-246.png?crc=4003117334" data-hidpi-src="images/u67289-246_2x.png?crc=4264788484" src="images/blank.gif?crc=4208392903"/><!-- rasterized frame -->
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="Container invi clearfix grpelem" id="u66543"><!-- column -->
+         <div class="clearfix colelem" id="u67249"><!-- group -->
+          <div class="shadow clearfix grpelem" id="u67252"><!-- group -->
+           <div class="clearfix grpelem" id="u67250"><!-- group -->
+            <img class="grpelem temp_no_img_src" id="u67251-22" alt="1. Let’s install Intecture using the auto-installer: curl -sSf https://get.intecture.io | sh 2. Create an Intecture project using the CLI: incli init my_project PHP 3. Write your configuration code 4. Run your code! Don’t forget to compile first if you need to. incli run my-server.example.com" width="414" height="252" data-orig-src="images/u67251-22.png?crc=9087689" data-hidpi-src="images/u67251-22_2x.png?crc=4274789366" src="images/blank.gif?crc=4208392903"/><!-- rasterized frame -->
+           </div>
+          </div>
+         </div>
+         <div class="clearfix colelem" id="u67245"><!-- group -->
+          <div class="shadow clearfix grpelem" id="u67246"><!-- group -->
+           <div class="shadow rounded-corners clearfix grpelem" id="u67247"><!-- group -->
+            <img class="grpelem temp_no_img_src" id="u67248-246" alt="extern crate inapi; use inapi::{Command, Directory, DirectoryOpts, File, Host, Package, PackageResult, Service, ServiceRunnable, Telemetry}; use std::env; use std::process::exit; fn main() { let args: Vec&lt;_&gt; = env::args().collect(); if args.len() &lt; 2 { println!(&quot;Usage: incli run &lt;server_host_or_ip&gt;&quot;); exit(1); } let mut host = Host::new(); host.connect(&amp;args[1], 7101, 7102, 7103).unwrap(); let mut pkg = Package::new(&amp;mut host, &quot;nginx&quot;, None).unwrap(); if pkg.is_installed() { println!(&quot;Nginx is installed&quot;); } else { println!(“Installing Nginx...&quot;); if let PackageResult::Result(cmd) = pkg.install(&amp;mut host).unwrap() { assert_eq!(cmd.exit_code, 0); println!(“Installed Nginx”); } let service = Service::new_service(ServiceRunnable::Service(&quot;n ginx&quot;), None); let enable = service.action(&amp;mut host, &quot;enable&quot;).unwrap(); assert_eq!(enable.exit_code, 0); let start = service.action(&amp;mut host, &quot;start&quot;).unwrap(); assert_eq!(start.exit_code, 0); }" width="403" height="819" data-orig-src="images/u67248-246.png?crc=4003117334" data-hidpi-src="images/u67248-246_2x.png?crc=4264788484" src="images/blank.gif?crc=4208392903"/><!-- rasterized frame -->
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="Container invi clearfix grpelem" id="u66541"><!-- column -->
+         <div class="clearfix colelem" id="u66639"><!-- group -->
+          <div class="shadow clearfix grpelem" id="u66599"><!-- group -->
+           <div class="clearfix grpelem" id="u66600"><!-- group -->
+            <img class="grpelem temp_no_img_src" id="u66601-22" alt="1. Let’s install Intecture using the auto-installer: curl -sSf https://get.intecture.io | sh 2. Create an Intecture project using the CLI: incli init my_project Rust 3. Write your configuration code 4. Run your code! Don’t forget to compile first if you need to. incli run my-server.example.com" width="414" height="252" data-orig-src="images/u66601-22.png?crc=3861554939" data-hidpi-src="images/u66601-22_2x.png?crc=16464447" src="images/blank.gif?crc=4208392903"/><!-- rasterized frame -->
+           </div>
+          </div>
+         </div>
+         <div class="clearfix colelem" id="u66635"><!-- group -->
+          <div class="shadow clearfix grpelem" id="u66602"><!-- group -->
+           <div class="shadow rounded-corners clearfix grpelem" id="u66603"><!-- group -->
+            <img class="grpelem temp_no_img_src" id="u66604-246" alt="extern crate inapi; use inapi::{Command, Directory, DirectoryOpts, File, Host, Package, PackageResult, Service, ServiceRunnable, Telemetry}; use std::env; use std::process::exit; fn main() { let args: Vec&lt;_&gt; = env::args().collect(); if args.len() &lt; 2 { println!(&quot;Usage: incli run &lt;server_host_or_ip&gt;&quot;); exit(1); } let mut host = Host::new(); host.connect(&amp;args[1], 7101, 7102, 7103).unwrap(); let mut pkg = Package::new(&amp;mut host, &quot;nginx&quot;, None).unwrap(); if pkg.is_installed() { println!(&quot;Nginx is installed&quot;); } else { println!(“Installing Nginx...&quot;); if let PackageResult::Result(cmd) = pkg.install(&amp;mut host).unwrap() { assert_eq!(cmd.exit_code, 0); println!(“Installed Nginx”); } let service = Service::new_service(ServiceRunnable::Service(&quot;n ginx&quot;), None); let enable = service.action(&amp;mut host, &quot;enable&quot;).unwrap(); assert_eq!(enable.exit_code, 0); let start = service.action(&amp;mut host, &quot;start&quot;).unwrap(); assert_eq!(start.exit_code, 0); }" width="403" height="819" data-orig-src="images/u66604-246.png?crc=4003117334" data-hidpi-src="images/u66604-246_2x.png?crc=4264788484" src="images/blank.gif?crc=4208392903"/><!-- rasterized frame -->
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <span class="clearfix colelem placeholder" data-placeholder-for="u9184-8_content"><!-- placeholder node --></span>
+     <span class="nonblock nontext anim_swing clip_frame colelem placeholder" data-placeholder-for="u2869_content"><!-- placeholder node --></span>
+     <span class="anchor_item colelem placeholder" data-placeholder-for="support-and-feedback_content"><!-- placeholder node --></span>
+     <div class="shadow gradient clearfix colelem temp_no_id" data-orig-id="u11478"><!-- column -->
+      <span class="clearfix colelem placeholder" data-placeholder-for="u2776-4_content"><!-- placeholder node --></span>
+      <div class="Caption-2-Big clearfix colelem temp_no_id" data-orig-id="u2779-22"><!-- content -->
+       <span class="placeholder" data-placeholder-for="u2779-5_content"><!-- placeholder node --></span>
+       <span class="placeholder" data-placeholder-for="u2779-10_content"><!-- placeholder node --></span>
+       <p class="temp_no_id" data-orig-id="u2779-15"><span class="placeholder" data-placeholder-for="u2779-15_0_content"><!-- placeholder node --></span><span><a class="nonblock" href="mailto:support@intecture.io?subject=Hello%20Intecture%20Support"><span class="placeholder" data-placeholder-for="u2779-12_content"><!-- placeholder node --></span></a></span></p>
+       <p class="temp_no_id" data-orig-id="u2779-20"><span class="placeholder" data-placeholder-for="u2779-20_0_content"><!-- placeholder node --></span><span><a class="nonblock" href="https://github.com/Intecture"><span class="placeholder" data-placeholder-for="u2779-17_content"><!-- placeholder node --></span></a></span></p>
+      </div>
+      <span class="clip_frame colelem placeholder" data-placeholder-for="u20788_content"><!-- placeholder node --></span>
+     </div>
+     <span class="anchor_item colelem placeholder" data-placeholder-for="bottom_content"><!-- placeholder node --></span>
+     <div class="browser_width colelem temp_no_id" data-orig-id="u120-bw">
+      <div class="pointer_cursor temp_no_id" data-orig-id="u120"><!-- column -->
+       <span class="block placeholder" data-placeholder-for="u120_0_content"><!-- placeholder node --></span>
+       <div class="clearfix temp_no_id" data-orig-id="u120_align_to_page">
+        <span class="nonblock nontext anim_swing clip_frame colelem placeholder" data-placeholder-for="u128_content"><!-- placeholder node --></span>
+        <span class="clearfix colelem placeholder" data-placeholder-for="u8175_content"><!-- placeholder node --></span>
+        <span class="clearfix colelem placeholder" data-placeholder-for="u3721_content"><!-- placeholder node --></span>
+        <span class="clearfix colelem placeholder" data-placeholder-for="u12164-4_content"><!-- placeholder node --></span>
+        <span class="nonblock nontext anim_swing clearfix colelem placeholder" data-placeholder-for="u9901-4_content"><!-- placeholder node --></span>
+        <span class="nonblock nontext anim_swing clearfix colelem placeholder" data-placeholder-for="u9905-4_content"><!-- placeholder node --></span>
+        <span class="nonblock nontext anim_swing clearfix colelem placeholder" data-placeholder-for="u9909-4_content"><!-- placeholder node --></span>
+        <span class="nonblock nontext anim_swing clearfix colelem placeholder" data-placeholder-for="u9913-4_content"><!-- placeholder node --></span>
+        <span class="nonblock nontext anim_swing clearfix colelem placeholder" data-placeholder-for="u9917-4_content"><!-- placeholder node --></span>
+        <span class="colelem placeholder" data-placeholder-for="u12160_content"><!-- placeholder node --></span>
+        <div class="clearfix colelem temp_no_id" data-orig-id="pu503"><!-- group -->
+         <span class="nonblock nontext clip_frame grpelem placeholder" data-placeholder-for="u503_content"><!-- placeholder node --></span>
+         <span class="nonblock nontext clip_frame grpelem placeholder" data-placeholder-for="u64109_content"><!-- placeholder node --></span>
+        </div>
+        <span class="clearfix colelem placeholder" data-placeholder-for="u159-17_content"><!-- placeholder node --></span>
+        <span class="clearfix colelem placeholder" data-placeholder-for="u68533_content"><!-- placeholder node --></span>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- Other scripts -->
+  <script type="text/javascript">
+   window.Muse.assets.check=function(d){if(!window.Muse.assets.checked){window.Muse.assets.checked=!0;var b={},c=function(a,b){if(window.getComputedStyle){var c=window.getComputedStyle(a,null);return c&&c.getPropertyValue(b)||c&&c[b]||""}if(document.documentElement.currentStyle)return(c=a.currentStyle)&&c[b]||a.style&&a.style[b]||"";return""},a=function(a){if(a.match(/^rgb/))return a=a.replace(/\s+/g,"").match(/([\d\,]+)/gi)[0].split(","),(parseInt(a[0])<<16)+(parseInt(a[1])<<8)+parseInt(a[2]);if(a.match(/^\#/))return parseInt(a.substr(1),
+16);return 0},g=function(g){for(var f=document.getElementsByTagName("link"),i=0;i<f.length;i++)if("text/css"==f[i].type){var h=(f[i].href||"").match(/\/?css\/([\w\-]+\.css)\?crc=(\d+)/);if(!h||!h[1]||!h[2])break;b[h[1]]=h[2]}f=document.createElement("div");f.className="version";f.style.cssText="display:none; width:1px; height:1px;";document.getElementsByTagName("body")[0].appendChild(f);for(i=0;i<Muse.assets.required.length;){var h=Muse.assets.required[i],l=h.match(/([\w\-\.]+)\.(\w+)$/),k=l&&l[1]?
+l[1]:null,l=l&&l[2]?l[2]:null;switch(l.toLowerCase()){case "css":k=k.replace(/\W/gi,"_").replace(/^([^a-z])/gi,"_$1");f.className+=" "+k;k=a(c(f,"color"));l=a(c(f,"backgroundColor"));k!=0||l!=0?(Muse.assets.required.splice(i,1),"undefined"!=typeof b[h]&&(k!=b[h]>>>24||l!=(b[h]&16777215))&&Muse.assets.outOfDate.push(h)):i++;f.className="version";break;case "js":k.match(/^jquery-[\d\.]+/gi)&&d&&d().jquery=="1.8.3"?Muse.assets.required.splice(i,1):i++;break;default:throw Error("Unsupported file type: "+
+l);}}f.parentNode.removeChild(f);if(Muse.assets.outOfDate.length||Muse.assets.required.length)f="Some files on the server may be missing or incorrect. Clear browser cache and try again. If the problem persists please contact website author.",g&&Muse.assets.outOfDate.length&&(f+="\nOut of date: "+Muse.assets.outOfDate.join(",")),g&&Muse.assets.required.length&&(f+="\nMissing: "+Muse.assets.required.join(",")),alert(f)};location&&location.search&&location.search.match&&location.search.match(/muse_debug/gi)?setTimeout(function(){g(!0)},5E3):g()}};
+var muse_init=function(){require.config({baseUrl:""});require(["jquery","museutils","whatinput","jquery.watch","webpro","musewpslideshow","jquery.museoverlay","touchswipe","musewpdisclosure","jquery.scrolleffects","jquery.museresponsive"],function(d){var $ = d;$(document).ready(function(){try{
+window.Muse.assets.check($);/* body */
+Muse.Utils.transformMarkupToFixBrowserProblemsPreInit();/* body */
+Muse.Utils.detectScreenResolution();/* HiDPI screens */
+Muse.Utils.prepHyperlinks(true);/* body */
+Muse.Utils.resizeHeight('.browser_width');/* resize height */
+Muse.Utils.requestAnimationFrame(function() { $('body').addClass('initialized'); });/* mark body as initialized */
+Muse.Utils.initWidget('#slideshowu24199', ['#bp_infinity', '#bp_1000'], function(elem) { var widget = new WebPro.Widget.ContentSlideShow(elem, {autoPlay:true,displayInterval:500,slideLinkStopsSlideShow:false,transitionStyle:'fading',lightboxEnabled_runtime:false,shuffle:false,transitionDuration:1500,enableSwipe:false,elastic:'off',resumeAutoplay:false,resumeAutoplayInterval:3000,playOnce:true,autoActivate_runtime:false}); $(elem).data('widget', widget); return widget; });/* #slideshowu24199 */
+Muse.Utils.initWidget('#pamphletu39006', ['#bp_infinity'], function(elem) { return new WebPro.Widget.ContentSlideShow(elem, {contentLayout_runtime:'stack',event:'click',deactivationEvent:'',autoPlay:false,displayInterval:3000,transitionStyle:'fading',transitionDuration:0,hideAllContentsFirst:false,shuffle:false,enableSwipe:true,resumeAutoplay:true,resumeAutoplayInterval:3000,playOnce:false,autoActivate_runtime:false}); });/* #pamphletu39006 */
+Muse.Utils.initWidget('#accordionu43165', ['#bp_1000'], function(elem) { return new WebPro.Widget.Accordion(elem, {canCloseAll:true,defaultIndex:-1}); });/* #accordionu43165 */
+Muse.Utils.initWidget('#pamphletu66539', ['#bp_1000'], function(elem) { return new WebPro.Widget.ContentSlideShow(elem, {contentLayout_runtime:'stack',event:'click',deactivationEvent:'',autoPlay:false,displayInterval:3000,transitionStyle:'fading',transitionDuration:0,hideAllContentsFirst:false,shuffle:false,enableSwipe:true,resumeAutoplay:true,resumeAutoplayInterval:3000,playOnce:false,autoActivate_runtime:false}); });/* #pamphletu66539 */
+$('#bp_infinity').one('muse_this_bp_activate', function(){
+$('#u37062-bw').registerPositionScrollEffect([{"in":[-Infinity,-179],"speed":[null,0.8]},{"in":[-179,Infinity],"speed":[null,0.8]}], $(this)); /* scroll effect */
+$('#u94').registerOpacityScrollEffect([{"opacity":0,"fade":0,"in":[-Infinity,100]},{"in":[100,100],"opacity":100},{"opacity":100,"fade":147,"in":[100,Infinity]}], $(this)); /* scroll effect */
+$('#u38201-bw').registerPositionScrollEffect([{"in":[-Infinity,1195.6],"speed":[null,0.8]},{"in":[1195.6,Infinity],"speed":[null,0.8]}], $(this)); /* scroll effect */
+$('#u10535-8').registerOpacityScrollEffect([{"opacity":0,"fade":190.2,"in":[-Infinity,945.3]},{"in":[945.3,945.3],"opacity":50},{"opacity":100,"fade":134.1,"in":[945.3,Infinity]}], $(this)); /* scroll effect */
+$('#u38390-bw').registerPositionScrollEffect([{"in":[-Infinity,2429.5],"speed":[null,0.8]},{"in":[2429.5,Infinity],"speed":[null,0.8]}], $(this)); /* scroll effect */
+$('#u38517-bw').registerPositionScrollEffect([{"in":[-Infinity,3606.2],"speed":[null,0.8]},{"in":[3606.2,Infinity],"speed":[null,0.8]}], $(this)); /* scroll effect */
+});/* scroll effects for one breakpoint */
+$('#bp_1000').one('muse_this_bp_activate', function(){
+$('#u37062-bw').registerPositionScrollEffect([{"in":[-Infinity,-163],"speed":[null,0.8]},{"in":[-163,Infinity],"speed":[null,0.8]}], $(this)); /* scroll effect */
+$('#u38201-bw').registerPositionScrollEffect([{"in":[-Infinity,1187.5],"speed":[null,0.8]},{"in":[1187.5,Infinity],"speed":[null,0.8]}], $(this)); /* scroll effect */
+$('#u10535-8').registerOpacityScrollEffect([{"opacity":0,"fade":61,"in":[-Infinity,1023.5]},{"in":[1023.5,1023.5],"opacity":50},{"opacity":100,"fade":134.1,"in":[1023.5,Infinity]}], $(this)); /* scroll effect */
+$('#u38390-bw').registerPositionScrollEffect([{"in":[-Infinity,2966.4],"speed":[null,0.8]},{"in":[2966.4,Infinity],"speed":[null,0.8]}], $(this)); /* scroll effect */
+$('#u38517-bw').registerPositionScrollEffect([{"in":[-Infinity,4923.85],"speed":[null,0.8]},{"in":[4923.85,Infinity],"speed":[null,0.8]}], $(this)); /* scroll effect */
+});/* scroll effects for one breakpoint */
+$( '.breakpoint' ).registerBreakpoint();/* Register breakpoints */
+Muse.Utils.transformMarkupToFixBrowserProblems();/* body */
+}catch(b){if(b&&"function"==typeof b.notify?b.notify():Muse.Assert.fail("Error calling selector function: "+b),false)throw b;}})})};
+
+</script>
+  <!-- RequireJS script -->
+  <script src="scripts/require.js?crc=4108833657" type="text/javascript" async data-main="scripts/museconfig.js?crc=4242129463" onload="if (requirejs) requirejs.onError = function(requireType, requireModule) { if (requireType && requireType.toString && requireType.toString().indexOf && 0 <= requireType.toString().indexOf('#scripterror')) window.Muse.assets.check(); }" onerror="window.Muse.assets.check();"></script>
+   </body>
 </html>
