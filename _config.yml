@@ -1,0 +1,21 @@
+title: Intecture
+email: info@intecture.io
+description: Language agnostic, DSL free, mercury free systems management for developers.
+copyright: Copyright (c) 2015-2016 Between Lines Ltd.
+baseurl: ""
+url: "https://intecture.io"
+twitter_username: intecture
+github_username:  intecture
+
+collections:
+- landing
+
+layouts_dir: ./_layouts
+data_dir: ./_data
+
+markdown: kramdown
+gems:
+  - jekyll-feed
+exclude:
+  - Gemfile
+  - Gemfile.lock

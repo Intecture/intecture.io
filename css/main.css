@@ -1,0 +1,63 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    color: #0E0E0E;
+}
+
+h1 {
+    font-family: 'Fira Sans', sans-serif;
+    font-style: normal;
+    letter-spacing: -0.03em;
+    font-size: 2.3em;
+}
+
+a:link {
+    color: #62C09B;
+}
+a:visited {
+    color: #62C09B;
+}
+a:hover {
+    color: #62C09B;
+}
+a:active {
+    color: #62C09B;
+}
+
+#fp-nav ul li .fp-tooltip {
+    color: #62C09B;
+}
+
+#fp-nav ul li a span {
+    background-color: #62C09B;
+}
+
+div.hero div.logo {
+    margin: 0 auto;
+    width: 15em;
+}
+
+div.hero div.logo img {
+    width: 15em;
+    padding-bottom: 2em;
+}
+
+div.hero div.logo span {
+    font-size: 1rem;
+}
+
+div.text-container {
+    width: 40em;
+    padding: 0 1em;
+    margin: 0 auto;
+    text-align: center;
+}
+
+div.text-container.dark {
+    color: #F2F2F2;
+}
+
+.caveat {
+    font-size: 0.6em;
+    vertical-align: top;
+}

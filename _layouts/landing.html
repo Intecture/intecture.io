@@ -1,0 +1,25 @@
+{% include header.html %}
+{% assign pages = site.landing | sort: 'sequence' %}
+
+    <div id="fullpage">
+        {% for page in pages %}
+            <div class="section">
+                <div class="{{ page.class }}">
+                    {{ page.output }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('#fullpage').fullpage({
+          sectionsColor: ['#F2F2F2', '#272E49', '#FFFFFF', '#90DBBD', '#FFFFFF', '#272E49', '#FFFFFF', '#90DBBD'],
+          anchors: [{% for page in pages %}'{{ page.title }}'{% if page != pages.last %},{% endif %}{% endfor %}],
+          navigation: true,
+          navigationPosition: 'right',
+          navigationTooltips: [{% for page in pages %}'{{ page.title }}'{% if page != pages.last %},{% endif %}{% endfor %}]
+        });
+      });
+    </script>
+{% include footer.html %}
