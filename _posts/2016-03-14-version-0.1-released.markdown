@@ -1,0 +1,31 @@
+---
+layout: post
+title:  "Version 0.1 Released"
+date:   2016-03-14 10:03:15
+---
+I'm very happy to announce today the availability of **Intecture 0.1**. Since my last post in October, a lot has been cooking (no reference to Chef there).
+
+# What's in this update?
+
+1. All the primitive functions have been completed:
+    * _Command_ - The primitive you know and love
+    * **Directory** - Manage folders
+    * **File** - Manage files
+    * **Host** - Representation a managed host (no more dealing with ZMQ)
+    * **Package** - Install/remove/update/etc... software packages from a variety of providers
+    * **Service** - Manage daemons
+    * **Telemetry** - Gathers information on a managed host
+2. A new installer is available to help you get up and running with Intecture's many repositories automagically - [static.intecture.io/install.sh](https://static.intecture.io/install.sh)
+
+# What's in the next update?
+
+The next update (v0.2) will be focussed on security. A new authentication layer built around [Curve ZMQ](http://curvezmq.org) will encrypt communication between the API and the Agent, protecting tunnels from eavesdropping and connection hijacking. Curve ZMQ also provides user/host mutual authentication based on a public/private certificate model, so you and your managed hosts will be assured of each other's identities.
+
+Apart from that, there are some patches around the Rust FFI that will address opportunities for segfaults, which nobody wants.
+
+Until next time, which I hope won't take another 6 months!
+
+Cheers,
+
+**Pete**<br />
+<s>Vice President</s> Junior Vice President, Between Lines Ltd.

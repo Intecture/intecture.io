@@ -13,9 +13,12 @@ collections:
 layouts_dir: ./_layouts
 data_dir: ./_data
 
+date_format: "%d %B, %Y"
+
 markdown: kramdown
 gems:
   - jekyll-feed
 exclude:
   - Gemfile
   - Gemfile.lock
+  - intecture_book
