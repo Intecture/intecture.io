@@ -67,7 +67,11 @@ a:active {
     bottom: 0;
     height: 16px;
     padding: 5px;
-    background-color: #F2F2F2;
+    background-color: #FFFFFF;
+}
+
+#footer.transparent {
+    background-color: transparent;
 }
 
 #footer div.copyright {
