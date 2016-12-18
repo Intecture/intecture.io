@@ -1,0 +1,3 @@
+[submodule "intecture_book"]
+	path = intecture_book
+	url = git@github.com:intecture/book
