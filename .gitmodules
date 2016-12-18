@@ -1,3 +1,6 @@
 [submodule "intecture_book"]
 	path = intecture_book
 	url = https://github.com/intecture/book
+[submodule "intecture_api"]
+	path = intecture_api
+	url = https://github.com/intecture/api

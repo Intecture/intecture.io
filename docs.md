@@ -7,5 +7,7 @@ The best place to start is by reading [the book]({{ site.baseurl }}/book). This 
 
 For technical documentation, each language has an API reference manual:
 - [C]({{ site.baseurl }}/c/)
-- [PHP]({{ site.baseurl }}/php/)
-- [Rust]({{ site.baseurl }}/rust/)
+- PHP
+    - [Version 5]({{ site.baseurl }}/php5/)
+    - [Version 7]({{ site.baseurl }}/php7/)
+- [Rust]({{ site.baseurl }}/rust/inapi/)
