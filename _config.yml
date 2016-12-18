@@ -6,6 +6,7 @@ baseurl: ""
 url: "https://intecture.io"
 twitter_username: intecture
 github_username:  intecture
+tracking_id: UA-42328458-2
 
 collections:
 - landing
