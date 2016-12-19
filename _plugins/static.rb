@@ -11,7 +11,7 @@ module Static
         Dir.chdir("intecture_api/bindings/c") do
             `doxygen -s`
         end
-        `rm -rf c && cp -R intecture_api/bindings/c/c .`
+        `rm -rf c && mv intecture_api/bindings/c/c .`
 
         # Generate PHP docs
         Dir.chdir("intecture_api/bindings/php5") do
