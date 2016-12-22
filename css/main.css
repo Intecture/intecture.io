@@ -159,3 +159,7 @@ div.warning {
     background-color: #FFEA65;
     text-align: center;
 }
+
+.smallprint {
+    font-size: 0.9em;
+}
