@@ -2,7 +2,7 @@ module Static
   class Generator < Jekyll::Generator
     def generate(site)
         # Generate book
-        `mdbook build intecture_book`
+        `mdbook build --dest-dir ../book intecture_book`
 
         # Generate Rust docs
         `cargo doc --no-deps --quiet --manifest-path intecture_api/Cargo.toml && rm -rf rust && cp -R intecture_api/target/doc rust`
