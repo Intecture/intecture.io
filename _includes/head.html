@@ -14,10 +14,20 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:light">
   <link rel="stylesheet" href="{{ site.baseurl }}/css/main.css">
+  <link rel="stylesheet" href="{{ site.baseurl }}/css/cookieBar.min.css">
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
   <script src="{{ site.baseurl }}/js/jquery.fullPage.min.js"></script>
+  <script src="{{ site.baseurl }}/js/jquery.cookieBar.min.js"></script>
+  <script type="text/javascript">
+  $(document).ready(function() {
+    $('.cookie-message').cookieBar({
+        closeButton: '.cookie-close',
+        secure: true
+    });
+  });
+  </script>
 </head>
 
 <body>

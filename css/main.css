@@ -165,6 +165,8 @@ div.warning {
     font-size: 0.9em;
 }
 
+@import url(http://reset5.googlecode.com/hg/reset.min.css);
+
 @media only screen and (max-device-width: 480px) {
     #container, div.text-container {
         width: 80%;
